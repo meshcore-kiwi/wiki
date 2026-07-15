@@ -1,0 +1,70 @@
+---
+title: MeshCore NZ
+description: The New Zealand MeshCore community wiki - off-grid LoRa mesh networking across Aotearoa.
+template: splash
+content: starlight-six
+editUrl: false
+sidebar:
+  hidden: true
+head:
+  - tag: title
+    content: MeshCore NZ Wiki
+---
+
+import {Card, CardGrid} from '@astrojs/starlight/components'
+import {ContainerSection, HeroX} from '@six-tech/starlight-theme-six/components'
+import heroImage from '../../assets/six-starlight-bg-wide-1980-01.png'
+
+<HeroX
+    height="400px"
+    mt="2rem"
+    mb="0"
+    px="4rem"
+    radius="1.5rem"
+    title="MeshCore NZ"
+    description="Off-grid LoRa mesh networking across Aotearoa. Community-run wiki for nodes, hardware, and coverage in New Zealand."
+    image={{
+        background: heroImage,
+        alt: "Hero background image",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        contentPosition: "bottom-left"
+    }}
+    actions={[
+        {
+            text: "Get Started",
+            link: "/getting-started/"
+        },
+        {
+            text: "MeshCore Project",
+            link: "https://meshcore.io/",
+            variant: "minimal",
+            attrs: {
+                target: "_blank",
+                rel: "noopener noreferrer"
+            }
+        }
+    ]}
+/>
+
+<ContainerSection>
+
+    ## Explore the wiki
+
+    <CardGrid>
+        <Card title="Getting started" icon="rocket">
+            New to MeshCore? [Start here](/getting-started/) - what it is, what you need, and how to get on the mesh.
+        </Card>
+        <Card title="Hardware" icon="seti:config">
+            [Recommended devices](/hardware/recommended-devices/), antennas, and setup notes for NZ conditions.
+        </Card>
+        <Card title="Guides" icon="open-book">
+            [How-to guides](/guides/joining-the-mesh/) for companion apps, repeaters, and room servers.
+        </Card>
+        <Card title="Contribute" icon="pen">
+            Anyone can edit this wiki. See [how to contribute](/community/contributing/) - via GitHub or right here in the browser.
+        </Card>
+    </CardGrid>
+
+</ContainerSection>
