@@ -16,7 +16,7 @@ Log in on this site and use the built-in editor. Your change is submitted as a p
 ## Style guide
 
 - Use British/NZ English (colour, organise, centre) - this applies to AI-assisted writing too.
-- No em-dashes (—); use `-` instead.
+- No em-dashes; use `-` instead.
 - Keep emojis to a minimum - none in headings or prose.
 
 ## Adding pages
