@@ -1,0 +1,17 @@
+name: Content suggestion
+description: Suggest new wiki content or a correction to an existing page
+labels: [content]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      description: Link to the existing page, or say where new content should live (e.g. guides/, hardware/).
+      placeholder: https://wiki.meshcore.kiwi/guides/joining-the-mesh/
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What should be added or changed?
+      description: Rough notes are fine - someone can turn them into a page. If you can write it yourself, even better - open a PR instead!
+    validations:
+      required: true

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: MeshCore NZ Forum
+    url: https://meshcorenz.flarum.cloud/
+    about: General MeshCore discussion - not wiki-specific issues
+  - name: MeshCore NZ Facebook group
+    url: https://www.facebook.com/groups/meshcorenz
+    about: Community chat and questions

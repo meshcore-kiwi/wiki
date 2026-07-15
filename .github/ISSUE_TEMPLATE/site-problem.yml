@@ -1,0 +1,18 @@
+name: Site problem
+description: Something on the site is broken - a dead link, layout issue, or error
+labels: [bug]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Where did it happen?
+      placeholder: https://wiki.meshcore.kiwi/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+      description: What did you see, and what did you expect? Include your browser/device if it looks like a display issue.
+    validations:
+      required: true

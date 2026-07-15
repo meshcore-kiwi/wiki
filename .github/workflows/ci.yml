@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: No em-dashes in content
+        run: |
+          if grep -rn $'—' src/content/docs/; then
+            echo "::error::Em-dashes found - use '-' instead (see CONTRIBUTING.md)"
+            exit 1
+          fi
+      - name: No unofficial MeshCore domains
+        run: |
+          if grep -rni 'meshcore\.co\.uk' src/; then
+            echo "::error::meshcore.co.uk is not an official domain - use meshcore.io"
+            exit 1
+          fi
