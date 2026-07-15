@@ -20,7 +20,7 @@ Files, tools, and links curated for people building and running MeshCore nodes a
 | Link | What it is |
 | --- | --- |
 | [NZ Meshmapper](http://nz.meshmapper.net) | NZ node coverage map |
-| [Pew Pew Map](https://meshcore.baird.io/#/home) | Live network map and analytics |
+| [NZ MeshCore Analyzer](https://meshcore.baird.io/#/home) | Live network map and analytics |
 | [MeshCore Link Planner](https://moderatewinguy.github.io/MeshMap-Planner/) | Plan RF links between sites |
 
 ## Keys & Prefixes
