@@ -3,6 +3,7 @@
 	"compatibility_date": "2026-06-03",
 	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
 	"name": "wiki",
+	"routes": [{ "pattern": "wiki.meshcore.kiwi", "custom_domain": true }],
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"directory": "./dist",

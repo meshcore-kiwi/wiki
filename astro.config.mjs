@@ -7,6 +7,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://wiki.meshcore.kiwi',
 	compressHTML: true,
 	adapter: cloudflare(),
 	// ponytail: lightningcss rejects a selector in the Six theme's CSS; esbuild doesn't
