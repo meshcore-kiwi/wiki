@@ -1,16 +1,43 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-06-03",
-	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
-	"name": "wiki",
-	"routes": [{ "pattern": "wiki.meshcore.kiwi", "custom_domain": true }],
+	"name": "meschore-kiwi-wiki",
+	"account_id": "d3785b3820d2294c3c1bfcc0c4bd5f8a",
 	"main": "@astrojs/cloudflare/entrypoints/server",
+	"upload_source_maps": true,
+	"compatibility_date": "2026-06-03",
+	"compatibility_flags": [
+		"global_fetch_strictly_public",
+		"nodejs_compat"
+	],
+	"placement":{
+		"mode": "smart"
+	},
+	"routes": [
+		{
+			"enabled": true,
+			"pattern": "wiki.meshcore.kiwi",
+			"custom_domain": true,
+			"previews_enabled": false
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "wiki_users",
+			"database_id": "17522941-1816-4027-9688-e8777e9411c7",
+			"migrations_dir": "../../migrations"
+		}
+	],
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS",
-		"run_worker_first": ["/api*"]
+		"not_found_handling": "404-page",
+		"run_worker_first": [
+			"/api*"
+		]
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"vars": {}
 }
