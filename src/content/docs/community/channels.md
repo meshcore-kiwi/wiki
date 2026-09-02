@@ -30,6 +30,11 @@ Treat Public and hashtag channels as public spaces. Repeaters, observers, and in
 | `#alerts` | Notices that matter to the mesh community |
 | `#jokes` | Keep it light (and appropriate) |
 | `#ham` | Ham radio chat |
+| `#quakealerts` | NZ wide earthquakes notficattions as the come in from GeoNet |
+| `#wlg-weather` | Wellington, Kapiti, and Blenheim weather forecasts at 6am & 7pm + realtime Metservice alerts |
+| `#wlg-marine` | Wellington marine forecast, tides, and current sea temp at 5am & 12pm daily |
+
+
 
 Know of a channel that's missing? [Add it](/community/contributing/).
 
