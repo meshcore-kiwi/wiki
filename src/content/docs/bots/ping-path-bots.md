@@ -7,7 +7,7 @@ sidebar:
 
 Ping and path bots answer a trigger word in the `#testing` channel with the route your message took to reach them. They are how you find out whether your node can reach a region, how many repeaters it went through, and which ones.
 
-One bot per region. All of them live in `#testing` - see [Channels](/community/channels/) for how to join it.
+One path bot per region. All of them live in `#testing` - see [Channels](/community/channels/) for how to join it.
 
 ## Using a bot
 
@@ -46,17 +46,19 @@ The hex prefixes in the path are the same ones you can look up with the [NZ Pref
 
 ## Regional bots
 
-| Trigger | Region        | Software    |
-| ------- | ------------- | ----------- |
-| `akl`   | Auckland      | OwlShack    |
-| `hlz`   | Hamilton      | Custom      |
-| `npl`   | New Plymouth  | meshcore-ha |
-| `trg`   | Tauranga      | OwlShack    |
-| `wlg`   | Wellington    | OwlShack    |
-| `wre`   | Whangarei     | OwlShack    |
+Listed north to south.
+
+| Trigger | Region       | Software    |
+| ------- | ------------ | ----------- |
+| `wre`   | Whangarei    | OwlShack    |
+| `akl`   | Auckland     | OwlShack    |
+| `hlz`   | Hamilton     | Custom      |
+| `trg`   | Tauranga     | OwlShack    |
+| `npl`   | New Plymouth | meshcore-ha |
+| `wlg`   | Wellington   | OwlShack    |
 
 :::note
-Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/).
+Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/), in its place north to south.
 :::
 
 Trigger words follow the same IATA-code scheme proposed for [regions](/community/channels/#regions).
@@ -77,6 +79,6 @@ If you are building or configuring one, match this pattern exactly - people rely
 @[<Sender Name>] 🦈=<Path hash size in bytes> 🦘=<Hops from sender to bot> 🛣️=<Path the message took>
 ```
 
-Reply at the **same path hash size the sender used**. A node testing on 1-byte paths needs a 1-byte answer to compare against; converting it to 2-byte makes the reply useless for the thing the sender was trying to measure. This is the single most important detail, and the reason most NZ bots run [OwlShack](https://github.com/meshcore-go/OwlShack) - it was the first to get both this and real path reporting right.
+Reply at the **same path hash size the sender used**. A node testing on 1-byte paths needs a 1-byte answer to compare against; converting it to 2-byte makes the reply useless for the thing the sender was trying to measure. This is the single most important detail - check your bot software does it before you deploy.
 
-Beyond that, the [rules for every bot](/bots/overview/) apply: one reply per trigger, never on a flood path, and nothing sent unprompted.
+Beyond that, the [rules for every bot](/bots/overview/) apply: one short reply per trigger, and nothing sent unprompted. Channel messages flood by nature, so every reply is carried by the whole mesh - that is what makes a chatty bot expensive.
