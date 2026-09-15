@@ -30,6 +30,13 @@ export function singleLine(value: string | null | undefined, max: number): strin
  * author on any page the person edits, so it is public and unremovable.
  * Normalises rather than rejects: throwing here would break sign-in itself,
  * and the sign-up form validates for the person's benefit before it gets here.
+ *
+ * 'Contributor' is a last-resort value for a NOT NULL column, nothing more.
+ * Do not read it back as "this person never chose a name": it is
+ * indistinguishable from someone who typed it, and account.astro used to nag
+ * that person forever. A nullable column would express the difference
+ * honestly, but better-auth declares this one NOT NULL and gen-auth-schema
+ * compares against that, so the schema is not ours to change.
  */
 export function normaliseDisplayName(name: string | null | undefined): string {
 	const cleaned = singleLine(name, 50);
