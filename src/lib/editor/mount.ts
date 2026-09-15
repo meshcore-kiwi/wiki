@@ -35,11 +35,10 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
 	return data;
 }
 
-export type OpenOptions = {
-	entryId: string;
-	filePath: string;
-	rawOnly: boolean;
-};
+export type OpenOptions =
+	| { entryId: string; filePath: string; rawOnly: boolean }
+	/** Creating a page: there is nothing to fetch and no path yet. */
+	| { create: true };
 
 type PageSource = {
 	filePath: string;
@@ -65,12 +64,16 @@ export async function openEditor(options: OpenOptions) {
 
 	loadStyles();
 
-	const res = await fetch(`/api/page?id=${encodeURIComponent(options.entryId)}`);
+	const creating = 'create' in options;
 
-	// Signed out: send them to sign in and come back with the editor open,
-	// rather than telling them off in a browser dialog.
+	// Creating needs the section list; editing needs the page itself. Either
+	// way a 401 means sign in and come back, rather than a browser dialog.
+	const res = await fetch(
+		creating ? '/api/sections' : `/api/page?id=${encodeURIComponent(options.entryId)}`,
+	);
+
 	if (res.status === 401) {
-		const back = `${location.pathname}?edit=1`;
+		const back = `${location.pathname}?${creating ? 'new' : 'edit'}=1`;
 		location.href = `/signin?next=${encodeURIComponent(back)}`;
 		return;
 	}
@@ -78,9 +81,21 @@ export async function openEditor(options: OpenOptions) {
 		showToast(`Could not open the editor: ${res.status} ${await res.text()}`);
 		return;
 	}
-	const source = (await res.json()) as PageSource;
 
-	const panel = buildPanel(options, source);
+	const payload = await res.json();
+
+	const source: PageSource = creating
+		? {
+				filePath: 'src/content/docs/...',
+				body: '',
+				frontmatter: { title: '', description: '', order: null },
+			}
+		: (payload as PageSource);
+
+	const panel = buildPanel(
+		creating ? { filePath: '', rawOnly: false, create: payload as { sections: string[] } } : options,
+		source,
+	);
 
 	let crepe: Crepe | null = null;
 	let raw: EditorView | null = null;
@@ -143,24 +158,59 @@ export async function openEditor(options: OpenOptions) {
 	});
 
 	panel.onSave(async () => {
+		const target = panel.target();
+
+		// Caught here rather than by the server so the message points at the
+		// field: an empty address is a half-filled form, not a bad request.
+		if (target && !target.slug) {
+			panel.say('Give the page a title, or type an address for it.', 'error');
+			return;
+		}
+
 		panel.say('Saving...');
 		try {
 			const data = await postJson<{ unchanged?: boolean; files?: PendingFile[] }>(
 				'/api/draft/save',
-				{
-					path: options.filePath,
-					frontmatter: panel.frontmatter(),
-					body: currentMarkdown(),
-					summary: panel.summary(),
-				},
+				target
+					? {
+							create: true,
+							section: target.section,
+							slug: target.slug,
+							frontmatter: panel.frontmatter(),
+							body: currentMarkdown(),
+							summary: panel.summary(),
+						}
+					: {
+							path: (options as { filePath: string }).filePath,
+							frontmatter: panel.frontmatter(),
+							body: currentMarkdown(),
+							summary: panel.summary(),
+						},
 			);
 
 			panel.showPending(data.files ?? []);
 			panel.say(
 				data.unchanged
 					? 'No changes to save.'
-					: 'Saved to your draft. Add more pages, then submit for review.',
+					: target
+						? `Saved to your draft. It will live at ${panel.publicUrl()} once a moderator merges it.`
+						: 'Saved to your draft. Add more pages, then submit for review.',
 			);
+		} catch (e) {
+			panel.say(e instanceof Error ? e.message : String(e), 'error');
+		}
+	});
+
+	panel.onDelete(async () => {
+		panel.say('Deleting...');
+		try {
+			const data = await postJson<{ files?: PendingFile[] }>('/api/draft/delete', {
+				entryId: (options as { entryId: string }).entryId,
+				path: (options as { filePath: string }).filePath,
+				summary: panel.summary(),
+			});
+			panel.showPending(data.files ?? []);
+			panel.say('Queued for deletion. Submit for review when you are ready.');
 		} catch (e) {
 			panel.say(e instanceof Error ? e.message : String(e), 'error');
 		}
@@ -193,7 +243,7 @@ export async function openEditor(options: OpenOptions) {
 			if (d?.files?.length) panel.say(`${d.files.length} page(s) already in your draft.`);
 		});
 
-	await (options.rawOnly ? toRaw() : toRich());
+	await (!creating && options.rawOnly ? toRaw() : toRich());
 }
 
 

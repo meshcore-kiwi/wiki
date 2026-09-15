@@ -1,6 +1,12 @@
 // Run: npx tsx src/lib/github/paths.test.ts
 import assert from 'node:assert/strict';
-import { assertContentPath, draftBranch, UnsafePathError } from './paths.ts';
+import {
+	assertContentPath,
+	contentPathFor,
+	draftBranch,
+	slugify,
+	UnsafePathError,
+} from './paths.ts';
 
 const ok = (p: string) => assert.equal(assertContentPath(p), p, `should allow ${p}`);
 const no = (p: unknown, why: string) =>
@@ -43,5 +49,39 @@ no('src/content/docs/x\u0000.md', 'null byte');
 no('src/content/docsx/evil.md', 'sibling directory sharing the prefix');
 
 assert.equal(draftBranch('abc123', 'q7'), 'wiki/abc123/q7');
+
+
+// --- composing a new page's path ---
+assert.equal(contentPathFor('guides', 'antenna-basics'), 'src/content/docs/guides/antenna-basics.md');
+assert.equal(contentPathFor('', 'about'), 'src/content/docs/about.md');
+assert.equal(contentPathFor('  guides  ', ' antenna-basics '), 'src/content/docs/guides/antenna-basics.md');
+
+for (const [section, slug, why] of [
+	['..', 'x', 'traversal as a section'],
+	['guides', '../../evil', 'traversal as a slug'],
+	['guides/nested', 'x', 'nested section'],
+	['Guides', 'x', 'uppercase section'],
+	['guides', 'Antenna_Basics', 'underscore and uppercase slug'],
+	['guides', '', 'empty slug'],
+	['guides', '-leading', 'leading hyphen'],
+	['guides', 'trailing-', 'trailing hyphen'],
+	['guides', 'double--hyphen', 'doubled hyphen'],
+	['guides', '.hidden', 'dotfile'],
+	['guides', 'page.mdx', 'mdx cannot be created here'],
+] as Array<[unknown, unknown, string]>) {
+	assert.throws(() => contentPathFor(section, slug), UnsafePathError, why as string);
+}
+
+// A missing section means top level, which is a real place for a page to live.
+// The slug is validated either way, so this is lenient without being loose.
+assert.equal(contentPathFor(undefined, 'about'), 'src/content/docs/about.md');
+assert.equal(contentPathFor(null, 'about'), 'src/content/docs/about.md');
+assert.throws(() => contentPathFor(undefined, undefined), UnsafePathError, 'but a missing slug is not');
+
+// slugify only suggests; the result is validated either way.
+assert.equal(slugify('Antenna Basics (2.4 GHz)'), 'antenna-basics-2-4-ghz');
+assert.equal(slugify('  Hex Prefixes!  '), 'hex-prefixes');
+assert.equal(slugify('///'), '');
+assert.throws(() => contentPathFor('guides', slugify('///')), UnsafePathError, 'empty slugify output still rejected');
 
 console.log('paths ok');
