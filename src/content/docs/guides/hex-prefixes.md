@@ -1,17 +1,19 @@
 ---
 title: Hex Prefixes (1/2/3-Byte)
 description: Understanding prefix sizes and avoiding conflicts as the NZ network grows.
+sidebar:
+  order: 0
 ---
 
 Your node's public key hex prefix is how the network routes packets. Understanding prefix sizes matters for avoiding conflicts as the network grows.
 
 ## Prefix size comparison
 
-| Size | Hex chars | Combinations | Collision risk | Min firmware |
-| --- | --- | --- | --- | --- |
-| 1-Byte | 2 (e.g. `3a`) | 256 | High | All versions |
-| **2-Byte ⭐** | 4 (e.g. `3a7f`) | 65,536 | Low | v1.14.0+ |
-| 3-Byte | 6 (e.g. `3a7fb2`) | 16,777,216 | Very low | v1.14.0+ |
+| Size         | Hex chars         | Combinations | Collision risk | Min firmware |
+| ------------ | ----------------- | ------------ | -------------- | ------------ |
+| 1-Byte       | 2 (e.g. `3a`)     | 256          | High           | All versions |
+| **2-Byte ⭐** | 4 (e.g. `3a7f`)   | 65,536       | Low            | v1.14.0+     |
+| 3-Byte       | 6 (e.g. `3a7fb2`) | 16,777,216   | Very low       | v1.14.0+     |
 
 **Recommended: 2-byte prefix** - the best balance between collision avoidance and compatibility. If your network is on v1.14.0+, switch to 2-byte.
 
@@ -37,7 +39,7 @@ Prefix size is configured per-device in the companion app. The sender controls t
 2. Go to **Settings → Path / Routing**.
 3. Find the `path.hash.mode` setting.
 4. Select 1-byte, 2-byte, or 3-byte.
-5. If using 2 or 3-byte mode, make sure all repeaters your packets traverse are on v1.14.0+.
+5. If using 2-byte or 3-byte mode, make sure all repeaters your packets traverse are on v1.14.0+.
 
 ## Picking a free prefix
 
