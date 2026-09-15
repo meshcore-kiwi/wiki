@@ -33,16 +33,15 @@
 		"binding": "ASSETS",
 		"not_found_handling": "404-page",
 		"run_worker_first": [
-			"/api*"
+			"/api*",
+			"/signin",
+			"/signup",
+			"/account"
 		]
 	},
 	"observability": {
 		"enabled": true
 	},
-	// Non-secret config lives here, not only in the dashboard: `wrangler deploy`
-	// defaults to keep_vars:false, so this block replaces the Worker's
-	// plain-text vars on every deploy and anything set only in the dashboard is
-	// dropped. Secrets are a separate binding type and are preserved.
 	"vars": {
 		"DISCORD_CLIENT_ID": "1544509418769485964",
 		"BETTER_AUTH_URL": "https://wiki.meshcore.kiwi",
