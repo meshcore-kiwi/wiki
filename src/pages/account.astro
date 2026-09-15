@@ -18,25 +18,13 @@ const [{ results: accounts }, { results: passkeys }] = await Promise.all([
 const PROVIDER_NAMES: Record<string, string> = { discord: 'Discord', github: 'GitHub' };
 
 const author = commitAuthor(user);
-// normaliseDisplayName's fallback, meaning the provider gave us no usable
-// name and they have not chosen one since.
-const needsName = user.name === 'Contributor';
 ---
 
 <AuthLayout title="Your profile" description="Manage your MeshCore NZ wiki account." wide>
-	{
-		needsName && (
-			<p class="auth-notice">
-				<strong>Choose a display name.</strong> You signed in without setting one, so your edits
-				would be credited to "Contributor".
-			</p>
-		)
-	}
-
 	<h2>Display name</h2>
 	<p class="auth-hint">
-		Public and permanent. It is the commit author on every edit you make and cannot be removed from
-		the history afterwards.
+		How your edits are credited. Public and permanent: it becomes the commit author on every change
+		you make and cannot be removed from the history afterwards.
 	</p>
 
 	<form id="name-form" class="auth-form">
