@@ -1,0 +1,34 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { SignInPanel } from '../components/SignInPanel';
+import { safeRedirect } from '../lib/safe-redirect';
+import { configuredProviders } from '../lib/auth';
+
+export const prerender = false;
+
+const next = safeRedirect(Astro.url.searchParams.get('next'));
+
+if (Astro.locals.user) return Astro.redirect(next === '/' ? '/account' : next);
+
+const providers = configuredProviders();
+---
+
+<AuthLayout
+	title="Create an account"
+	description="Create an account to contribute to the MeshCore NZ wiki."
+	tagline="Contributions are credited to you by name and reviewed by a moderator before they go live."
+>
+	{/* No passkey here: registering one needs a session, so every account
+	    starts at a social provider. */}
+	<SignInPanel providers={providers} next={next} client:load />
+
+	<p class="auth-hint">
+		Your account is created the first time you sign in, so there is no separate form. Your display
+		name comes from whichever account you use and becomes the commit author on every edit you make.
+		You can change it afterwards on your profile.
+	</p>
+
+	<p class="auth-hint">
+		Already signed up? <a href={`/signin?next=${encodeURIComponent(next)}`}>Sign in</a>.
+	</p>
+</AuthLayout>
