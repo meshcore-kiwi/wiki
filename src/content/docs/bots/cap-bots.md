@@ -11,7 +11,7 @@ Community stub - the channel and format are still being worked out. Help settle 
 
 CAP bots relay official warnings onto the mesh - severe weather from MetService, Civil Defence emergency alerts, and similar sources. [Common Alerting Protocol](https://en.wikipedia.org/wiki/Common_Alerting_Protocol) is the open standard those agencies already publish in, so a bot can consume the feed directly rather than scraping a website.
 
-This is the one case where a bot sends without being asked, and it earns that because an alert is worth nothing after the event. It does not earn a free pass on airtime.
+A CAP bot speaks without being asked, which is fine so long as it does it somewhere that asked for it - an alert is worth nothing after the event. It is not a free pass on airtime.
 
 ## Where they belong
 
@@ -25,7 +25,7 @@ Not the Public channel.
 - **Alerts only, never a feed.** Warnings and emergencies, not routine forecasts. If it goes out several times a day, it's a feed and it belongs on a regional weather channel.
 - **One message per alert.** Short enough to arrive in one packet. Where it is, what it is, how bad, when.
 - **No repeats.** Re-sending the same alert doubles the cost and teaches people to ignore it. Send updates only when the alert itself changes.
-- **Region-scoped.** A Northland flood warning has no business waking up Invercargill. Match the alert's own area to the channel it goes to.
+- **Keep it local.** A Northland flood warning has no business waking up Invercargill. MeshCore [regions](/community/channels/#regions) would be the natural way to scope this, but NZ isn't using them yet - so for now the only lever is the channel. A regional alert belongs on a regional channel, not a national one.
 - **One bot per source, per region.** Two bots on the same MetService feed means every warning goes out twice.
 
 :::caution

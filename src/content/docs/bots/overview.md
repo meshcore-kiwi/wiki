@@ -20,16 +20,16 @@ Anything else is not an established pattern on the national mesh. Talk to the co
 
 These apply to every bot, of every kind.
 
-- **One bot per region.** Two bots answering the same trigger in the same area doubles the traffic and halves the usefulness. Check what already exists before you deploy.
+- **One bot of each type per region.** A region can have a path bot and a CAP bot and a weather bot - it does not need two path bots. Two bots doing the same job in the same area double the traffic and halve the usefulness. Check what already exists before you deploy.
 - **Ask before you deploy.** Raise it in the [Discord](https://discord.com/channels/1495203904898728149/1495412712505606315) or the [Facebook group](https://www.facebook.com/groups/meshcorenz) first. Coordination is the whole point - see [Etiquette](/community/etiquette/).
 - **Stay on the dedicated channel.** Ping and path bots belong in `#testing`. Never automate on the Public channel without community consensus.
-- **Reply only when triggered.** No scheduled chatter, no polling, no unsolicited status messages. CAP bots are the exception and only because alerts are event-driven.
+- **Something has to trigger it.** A message, an alert feed, or a schedule are all legitimate triggers - a path bot answers a message, a CAP bot answers a feed, a regional weather bot can run to a clock. What is not legitimate is a bot talking on a channel that did not ask for it. Anything that speaks unprompted needs a channel set up for it, and putting it on a standard channel takes full community consensus.
 - **One short reply per trigger.** Everything the sender needs in a single message.
 - **Remember that every channel message floods.** A channel message has no single destination, so it cannot be path-routed - it goes out flood and every repeater that hears it rebroadcasts it. That is the real cost behind the rule above: a bot that answers twice has flooded the mesh twice. Where a bot does send a direct message, use a specific path rather than flood.
 - **Human communications take priority.** If your bot is competing with people talking to each other, your bot is wrong.
 
-:::caution
-If your bot doesn't clearly benefit the mesh community, the national network isn't the right place for it. A bot that only serves you belongs on your own channel.
+:::tip
+Running something just for yourself? Use your own channel. If it takes up much airtime, move it to another frequency.
 :::
 
 ## Running one well
@@ -43,6 +43,16 @@ Bots are nodes, so [Etiquette](/community/etiquette/) applies: an accurate locat
 
 ## Software
 
-Most NZ bots run [OwlShack](https://github.com/meshcore-go/OwlShack), which handles the trigger matching and was the first bot in NZ able to report real path information and reply at the sender's own path hash size. Some regions run custom code, and some use meshcore-ha.
-
 The technology doesn't matter. Following the pattern does - see [Ping & path bots](/bots/ping-path-bots/) for the exact message format.
+
+What people run in New Zealand:
+
+| Software                                                    | Notes                                                                             |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [OwlShack](https://github.com/meshcore-go/OwlShack)         | Operator console with a Bots page - templated auto-responders and scheduled messages |
+| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha)  | Home Assistant integration; bots are built as HA automations                        |
+| Custom code                                                 | Several regions run their own                                                       |
+
+:::note
+Community stub - running something that isn't listed? [Add it](/community/contributing/).
+:::
