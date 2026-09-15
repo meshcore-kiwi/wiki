@@ -1,0 +1,23 @@
+# cp .dev.vars.example .dev.vars   (git-ignored; production uses `wrangler secret put`)
+BETTER_AUTH_SECRET="generate with: openssl rand -base64 32"
+BETTER_AUTH_URL="http://localhost:4321"
+
+# https://discord.com/developers - redirect: <BETTER_AUTH_URL>/api/auth/callback/discord
+DISCORD_CLIENT_ID=""
+DISCORD_CLIENT_SECRET=""
+
+# GitHub App (org-owned) that commits on contributors' behalf and opens PRs.
+# Either the numeric App ID or the Client ID works as the JWT issuer; GitHub
+# recommends the Client ID.
+GITHUB_APP_ID=""
+GITHUB_APP_INSTALLATION_ID=""
+# base64 of the PKCS#8 key. GitHub issues PKCS#1, which WebCrypto cannot import:
+#   openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in key.pem | base64 -w0
+GITHUB_APP_PRIVATE_KEY=""
+GITHUB_REPO="meshcore-kiwi/wiki"
+
+# GitHub OAuth App for signing in (NOT the GitHub App bot below).
+# https://github.com/settings/developers -> New OAuth App
+# Callback: <BETTER_AUTH_URL>/api/auth/callback/github
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""

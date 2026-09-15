@@ -25,7 +25,7 @@
 			"binding": "DB",
 			"database_name": "wiki_users",
 			"database_id": "17522941-1816-4027-9688-e8777e9411c7",
-			"migrations_dir": "../../migrations"
+			"migrations_dir": "./migrations"
 		}
 	],
 	"assets": {
@@ -39,5 +39,14 @@
 	"observability": {
 		"enabled": true
 	},
-	"vars": {}
+	// Non-secret config lives here, not only in the dashboard: `wrangler deploy`
+	// defaults to keep_vars:false, so this block replaces the Worker's
+	// plain-text vars on every deploy and anything set only in the dashboard is
+	// dropped. Secrets are a separate binding type and are preserved.
+	"vars": {
+		"DISCORD_CLIENT_ID": "1544509418769485964",
+		"BETTER_AUTH_URL": "https://wiki.meshcore.kiwi",
+		"GITHUB_CLIENT_ID": "Ov23liibac93Ga8P5Gec",
+		"GITHUB_REPO": "meshcore-kiwi/wiki"
+	}
 }
