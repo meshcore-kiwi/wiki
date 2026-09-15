@@ -7,11 +7,11 @@ Your node's public key hex prefix is how the network routes packets. Understandi
 
 ## Prefix size comparison
 
-| Size | Hex chars | Combinations | Collision risk | Min firmware |
-| --- | --- | --- | --- | --- |
-| 1-Byte | 2 (e.g. `3a`) | 256 | High | All versions |
-| **2-Byte ⭐** | 4 (e.g. `3a7f`) | 65,536 | Low | v1.14.0+ |
-| 3-Byte | 6 (e.g. `3a7fb2`) | 16,777,216 | Very low | v1.14.0+ |
+| Size         | Hex chars         | Combinations | Collision risk | Min firmware |
+| ------------ | ----------------- | ------------ | -------------- | ------------ |
+| 1-Byte       | 2 (e.g. `3a`)     | 256          | High           | All versions |
+| **2-Byte ⭐** | 4 (e.g. `3a7f`)   | 65,536       | Low            | v1.14.0+     |
+| 3-Byte       | 6 (e.g. `3a7fb2`) | 16,777,216   | Very low       | v1.14.0+     |
 
 **Recommended: 2-byte prefix** - the best balance between collision avoidance and compatibility. If your network is on v1.14.0+, switch to 2-byte.
 
