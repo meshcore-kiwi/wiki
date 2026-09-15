@@ -25,7 +25,7 @@ These apply to every bot, of every kind.
 - **Stay on the dedicated channel.** Ping and path bots belong in `#testing`. Never automate on the Public channel without community consensus.
 - **Reply only when triggered.** No scheduled chatter, no polling, no unsolicited status messages. CAP bots are the exception and only because alerts are event-driven.
 - **One short reply per trigger.** Everything the sender needs in a single message.
-- **Never reply on a FLOOD path.** A flood reply ties up every repeater in the country. Reply on the path the message arrived on.
+- **Remember that every channel message floods.** A channel message has no single destination, so it cannot be path-routed - it goes out flood and every repeater that hears it rebroadcasts it. That is the real cost behind the rule above: a bot that answers twice has flooded the mesh twice. Where a bot does send a direct message, use a specific path rather than flood.
 - **Human communications take priority.** If your bot is competing with people talking to each other, your bot is wrong.
 
 :::caution

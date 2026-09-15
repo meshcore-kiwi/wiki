@@ -79,4 +79,4 @@ If you are building or configuring one, match this pattern exactly - people rely
 
 Reply at the **same path hash size the sender used**. A node testing on 1-byte paths needs a 1-byte answer to compare against; converting it to 2-byte makes the reply useless for the thing the sender was trying to measure. This is the single most important detail, and the reason most NZ bots run [OwlShack](https://github.com/meshcore-go/OwlShack) - it was the first to get both this and real path reporting right.
 
-Beyond that, the [rules for every bot](/bots/overview/) apply: one reply per trigger, never on a flood path, and nothing sent unprompted.
+Beyond that, the [rules for every bot](/bots/overview/) apply: one short reply per trigger, and nothing sent unprompted. Channel messages flood by nature, so every reply is carried by the whole mesh - that is what makes a chatty bot expensive.
