@@ -50,6 +50,48 @@ export function assertContentPath(path: unknown): string {
 	return path;
 }
 
+/**
+ * One path segment: lowercase words joined by single hyphens. Deliberately
+ * narrower than assertContentPath allows, because a new page's section and
+ * slug become a permanent public URL and, for a section, the sidebar's label.
+ */
+const SEGMENT = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** Best-effort slug from a page title. The result is still validated. */
+export function slugify(value: string): string {
+	return value
+		.normalize('NFKD')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
+		.slice(0, 60)
+		.replace(/-+$/, '');
+}
+
+/**
+ * Builds the path for a new page from a section ('' for top level) and a slug.
+ * Composed here rather than accepted whole from the client, so a new page
+ * cannot land somewhere assertContentPath would tolerate but we would not -
+ * a nested folder, say, or a .mdx file the rich editor cannot round-trip.
+ */
+export function contentPathFor(section: unknown, slug: unknown): string {
+	const folder = typeof section === 'string' ? section.trim() : '';
+	const name = typeof slug === 'string' ? slug.trim() : '';
+
+	if (!SEGMENT.test(name)) {
+		throw new UnsafePathError(
+			'The page address must be lowercase words joined by hyphens, like antenna-basics',
+		);
+	}
+	if (folder !== '' && !SEGMENT.test(folder)) {
+		throw new UnsafePathError(
+			'The section must be lowercase words joined by hyphens, like getting-started',
+		);
+	}
+
+	return assertContentPath(`${ROOT}${folder ? `${folder}/` : ''}${name}.md`);
+}
+
 /** Branch name for one contributor's draft. Never built from user input. */
 export function draftBranch(userId: string, draftId: string): string {
 	return `wiki/${userId}/${draftId}`;

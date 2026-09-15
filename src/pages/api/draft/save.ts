@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { commitAuthor, singleLine } from '../../../lib/attribution';
 import { currentDraft, DraftLimitError, touchDraft } from '../../../lib/drafts';
 import { changedFiles, readFile, writeFile } from '../../../lib/github/client';
-import { assertContentPath, UnsafePathError } from '../../../lib/github/paths';
+import { assertContentPath, contentPathFor, UnsafePathError } from '../../../lib/github/paths';
 import { sidebarOrder, spliceContentFile } from '../../../lib/editor/frontmatter';
 import { unescapeLinkAmpersands } from '../../../lib/editor/format';
 
@@ -16,14 +16,22 @@ export const POST: APIRoute = async (ctx) => {
 
 	const body = (await ctx.request.json().catch(() => null)) as {
 		path?: unknown;
+		create?: unknown;
+		section?: unknown;
+		slug?: unknown;
 		body?: unknown;
 		frontmatter?: { title?: unknown; description?: unknown; order?: unknown };
 		summary?: unknown;
 	} | null;
 
+	// A new page's path is composed from a section and slug rather than sent
+	// whole, so it cannot land somewhere assertContentPath tolerates but the
+	// wiki's own conventions do not.
+	const creating = body?.create === true;
+
 	let path: string;
 	try {
-		path = assertContentPath(body?.path);
+		path = creating ? contentPathFor(body?.section, body?.slug) : assertContentPath(body?.path);
 	} catch (e) {
 		// A rejected path is either a bug in our own editor or someone probing,
 		// so say what was wrong without echoing the path back.
@@ -51,7 +59,7 @@ export const POST: APIRoute = async (ctx) => {
 	// 72 is the conventional git subject limit.
 	const summary =
 		singleLine(typeof body.summary === 'string' ? body.summary : '', 72) ||
-		`Update ${path.replace('src/content/docs/', '')}`;
+		`${creating ? 'Add' : 'Update'} ${path.replace('src/content/docs/', '')}`;
 
 	try {
 		const draft = await currentDraft(user.id);
@@ -60,13 +68,24 @@ export const POST: APIRoute = async (ctx) => {
 		// same page must replace the blob this branch already has. The text is
 		// also the basis for the splice, so frontmatter keys the editor does
 		// not manage survive untouched.
+		// The draft branch is cut from main, so one read answers both "does it
+		// exist here" and "does it exist on main".
 		const existing = await readFile(path, draft.branch);
-		if (!existing) {
+
+		if (creating && existing) {
+			return Response.json(
+				{ error: 'A page already exists at that address. Edit it instead, or pick another.' },
+				{ status: 409 },
+			);
+		}
+		if (!creating && !existing) {
 			return Response.json({ error: 'That page no longer exists' }, { status: 409 });
 		}
 
+		// Splicing into '' yields a fresh file, so creating and editing share
+		// one definition of how a content file is written.
 		const text = spliceContentFile(
-			existing.text,
+			existing?.text ?? '',
 			{
 				title,
 				description:
@@ -79,7 +98,7 @@ export const POST: APIRoute = async (ctx) => {
 			unescapeLinkAmpersands(body.body),
 		);
 
-		if (existing.text === text) {
+		if (existing?.text === text) {
 			return Response.json({
 				draftId: draft.id,
 				branch: draft.branch,
@@ -94,7 +113,9 @@ export const POST: APIRoute = async (ctx) => {
 			message: summary,
 			branch: draft.branch,
 			author: commitAuthor(user),
-			sha: existing.sha,
+			// Omitted when creating: GitHub rejects a sha for a file that does
+			// not exist yet.
+			sha: existing?.sha,
 		});
 
 		// Independent of each other; no reason for the client to wait for both
