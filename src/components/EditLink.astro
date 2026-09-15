@@ -1,0 +1,83 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+
+const route = Astro.locals.starlightRoute;
+const entry = route.entry as { id: string; filePath?: string } | undefined;
+
+// editUrl is false for pages that opt out (index.mdx), which is also the
+// signal that a page is not editable here.
+const editable = Boolean(route.editUrl && entry?.filePath);
+// MDX pages are JSX under the markdown; a rich editor would destroy the
+// components, so they open raw-only.
+const rawOnly = entry?.filePath?.endsWith('.mdx') ?? false;
+---
+
+{
+	editable && (
+		<button
+			type="button"
+			class="edit-page sl-flex print:hidden"
+			data-entry-id={entry!.id}
+			data-file-path={entry!.filePath}
+			data-raw-only={rawOnly ? 'true' : null}
+		>
+			<Icon name="pencil" size="1.2em" />
+			Edit this page
+		</button>
+	)
+}
+
+<style>
+	.edit-page {
+		gap: 0.5rem;
+		align-items: center;
+		background: none;
+		border: 0;
+		padding: 0;
+		font: inherit;
+		color: var(--muted-foreground);
+		cursor: pointer;
+	}
+	.edit-page:hover {
+		color: var(--foreground);
+	}
+	.edit-page[disabled] {
+		opacity: 0.6;
+		cursor: progress;
+	}
+</style>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('.edit-page');
+
+	if (button) {
+		// Shown to everyone, signed in or not. Hiding it from readers means
+		// nobody discovers the wiki is editable, and probing the session on
+		// every page load costs a request on pages that are otherwise static.
+		// A signed-out click routes through sign-in and comes straight back.
+		const open = async () => {
+			const { openEditor } = await import('../lib/editor/mount');
+			await openEditor({
+				entryId: button.dataset.entryId!,
+				filePath: button.dataset.filePath!,
+				rawOnly: button.dataset.rawOnly === 'true',
+			});
+		};
+
+		button.addEventListener('click', async () => {
+			button.disabled = true;
+			try {
+				await open();
+			} finally {
+				button.disabled = false;
+			}
+		});
+
+		// Coming back from sign-in: reopen the editor the reader asked for,
+		// rather than dropping them on the page with no explanation.
+		if (new URLSearchParams(location.search).get('edit') === '1') {
+			history.replaceState(null, '', location.pathname + location.hash);
+			void open();
+		}
+	}
+</script>

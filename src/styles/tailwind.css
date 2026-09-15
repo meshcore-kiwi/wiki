@@ -1,0 +1,114 @@
+/* ---------------------------------------------------------------------------
+   Tailwind, deliberately WITHOUT preflight.
+
+   Tailwind's base reset would fight Starlight's own styles across every doc
+   page on the site. v4 lets us import its layers individually, so we take the
+   theme (so utilities resolve) and the utilities themselves, and leave the
+   reset alone. `@import "tailwindcss"` would pull preflight in - don't.
+
+   This file is imported only by the surfaces that use React islands (the auth
+   pages and the editor), never by astro.config.mjs, so a wiki page never
+   downloads it.
+--------------------------------------------------------------------------- */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* ---------------------------------------------------------------------------
+   The subset of preflight that shadcn/ui actually depends on.
+
+   Skipping preflight entirely broke its components: without it a <button>
+   keeps the UA's own colour and font, so the outline variant rendered black
+   text on a near-black card. These are the few rules shadcn assumes, and
+   nothing more - no margin reset, no heading reset, nothing that would change
+   how Starlight's own markup looks.
+
+   Safe by scope as well as by content: this file is imported only by the
+   surfaces that host React islands, never by astro.config.mjs.
+--------------------------------------------------------------------------- */
+@layer base {
+	button,
+	input,
+	optgroup,
+	select,
+	textarea {
+		font: inherit;
+		letter-spacing: inherit;
+		color: inherit;
+		background-color: transparent;
+	}
+
+	button,
+	[type='button'],
+	[type='submit'] {
+		appearance: button;
+		cursor: pointer;
+	}
+
+	/* Tailwind's border utilities set width only, so they assume a default
+	   style. Both halves are required: `border-style: solid` alone turns on the
+	   UA's default medium border-width for every element, which drew a black
+	   box around everything on the page. */
+	*,
+	*::before,
+	*::after {
+		border-width: 0;
+		border-style: solid;
+		border-color: var(--border);
+	}
+
+	::placeholder {
+		color: var(--muted-foreground);
+		opacity: 1;
+	}
+
+	svg {
+		display: block;
+		vertical-align: middle;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Bridge the Six theme's tokens into Tailwind's own namespace.
+
+   The theme already defines every token shadcn/ui expects (verified: full
+   coverage, plus --code-background, --foreground-light and --mark-background).
+   Mapping them here means shadcn components inherit the site's light and dark
+   themes with no palette of their own and nothing to keep in sync - the
+   theme's [data-theme] blocks remain the single source of truth.
+--------------------------------------------------------------------------- */
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--primary-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	--radius-sm: calc(var(--radius) - 2px);
+	--radius-md: var(--radius);
+	--radius-lg: calc(var(--radius) + 2px);
+
+	--font-sans: var(--sl-font, system-ui, sans-serif);
+	--font-mono: var(--sl-font-mono, ui-monospace, monospace);
+}
+
+/* NOT --card-foreground: the theme's dark block defines it as the literal
+   `--foreground` (a missing var()), so it is an invalid value. Mapped to
+   --foreground above, which is what it was meant to point at. */

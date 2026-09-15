@@ -4,3 +4,237 @@
 /* hero background image is dark; keep hero text light in both themes */
 .six-hero-title { color: #fff !important; }
 .six-hero-tagline { color: rgba(255, 255, 255, 0.85) !important; }
+
+/* ---------------------------------------------------------------------------
+   Account menu and auth forms.
+
+   Neither Starlight nor the Six theme ships form controls or a dropdown, so
+   they are defined once here. Every colour is one of the theme's own tokens
+   (theme.css defines each for both [data-theme='light'] and 'dark'), so there
+   is nothing to keep in sync and contrast is correct in both themes. No
+   hardcoded colours belong in this block.
+
+   The theme forces `a { color: var(--foreground-light) !important }` on
+   content links, so anything with its own link colour is marked .not-content.
+--------------------------------------------------------------------------- */
+
+.auth-form {
+	display: grid;
+	gap: 0.35rem;
+	max-width: 26rem;
+}
+.auth-form label {
+	margin-top: 0.9rem;
+	font-weight: 600;
+}
+/* Shared by the auth forms and the editor's frontmatter fields (editor.css
+   relies on this rule; it is the one control style both surfaces need). */
+.auth-form input,
+.wiki-editor input[type='text'],
+.wiki-editor input[type='number'] {
+	padding: 0.55rem 0.75rem;
+	border: 1px solid var(--input);
+	border-radius: var(--radius);
+	background: var(--background);
+	color: var(--foreground);
+	font: inherit;
+}
+.auth-form input:focus-visible,
+.wiki-editor input:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 1px;
+}
+.auth-hint {
+	color: var(--muted-foreground);
+	font-size: 0.85em;
+}
+.auth-error {
+	color: var(--destructive);
+	font-weight: 500;
+}
+
+.auth-btn {
+	margin-top: 1rem;
+	padding: 0.6rem 1.1rem;
+	border: 1px solid transparent;
+	border-radius: var(--radius);
+	background: var(--primary);
+	color: var(--primary-foreground);
+	font: inherit;
+	font-weight: 500;
+	cursor: pointer;
+}
+.auth-btn[data-variant='secondary'] {
+	background: var(--secondary);
+	color: var(--secondary-foreground);
+	border-color: var(--border);
+}
+.auth-btn:hover:not([disabled]) {
+	opacity: 0.9;
+}
+.auth-btn[disabled] {
+	opacity: 0.6;
+	cursor: progress;
+}
+.auth-choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: 1rem;
+}
+
+/* The theme strips heading margins inside .sl-markdown-content, so a heading
+   after a form or button sits flush against it. Scoped to that surface: the
+   standalone auth pages never had the margins stripped, and AuthLayout sets
+   their heading spacing itself. */
+.sl-markdown-content :is(.auth-choices, .auth-form, .auth-btn) + :is(h2, h3) {
+	margin-top: 2.5rem;
+}
+/* Grid children stretch by default, which would make the submit button
+   full-width while the buttons above it are auto-width. */
+.auth-form .auth-btn {
+	justify-self: start;
+}
+
+/* The panel is a top-layer [popover], so the header's overflow:hidden cannot
+   clip it and no ancestor needs unclipping. Position comes from the trigger's
+   rect, set in AccountMenu.astro on open. */
+.account-panel {
+	position: fixed;
+	/* The UA stylesheet gives [popover] inset:0 and margin:auto, which would
+	   stretch it across the viewport once position is fixed. */
+	inset: auto;
+	margin: 0;
+	min-width: 13rem;
+	padding: 0.35rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--popover);
+	color: var(--popover-foreground);
+	box-shadow: 0 10px 30px rgb(0 0 0 / 0.18);
+}
+.account-panel a,
+.account-panel button {
+	display: block;
+	width: 100%;
+	padding: 0.45rem 0.6rem;
+	border: 0;
+	border-radius: calc(var(--radius) - 2px);
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: start;
+	text-decoration: none;
+	cursor: pointer;
+}
+.account-panel a:hover,
+.account-panel button:hover {
+	background: var(--muted);
+}
+.account-whoami {
+	padding: 0.45rem 0.6rem;
+	margin-bottom: 0.35rem;
+	border-bottom: 1px solid var(--border);
+}
+.account-whoami span {
+	display: block;
+	color: var(--muted-foreground);
+	font-size: 0.85em;
+	word-break: break-all;
+}
+
+.contribution {
+	padding: 0.75rem 1rem;
+	margin-block: 0.75rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--card);
+}
+.contribution h3 {
+	margin-block: 0 0.25rem;
+	font-size: 1rem;
+}
+.contribution blockquote {
+	margin: 0.5rem 0 0;
+	padding-inline-start: 0.75rem;
+	border-inline-start: 3px solid var(--border);
+}
+.contribution blockquote p {
+	margin: 0.2rem 0 0;
+	white-space: pre-wrap;
+}
+
+.wiki-editor-summary {
+	padding: 0.6rem 1rem;
+	border-block-end: 1px solid var(--border);
+}
+.wiki-editor-summary label {
+	display: grid;
+	gap: 0.2rem;
+	font-size: 0.85em;
+	color: var(--muted-foreground);
+}
+.wiki-editor-summary input {
+	padding: 0.4rem 0.6rem;
+	border: 1px solid var(--input);
+	border-radius: var(--radius);
+	background: var(--background);
+	color: var(--foreground);
+	font: inherit;
+}
+
+/* Last-resort error surface for failures before the editor panel exists.
+   Replaces alert(), which blocks the page and reads as a site fault. */
+.wiki-toast {
+	position: fixed;
+	inset-block-end: 1rem;
+	inset-inline: auto 1rem;
+	z-index: 200;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	max-width: min(28rem, calc(100vw - 2rem));
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--border);
+	border-inline-start: 3px solid var(--destructive);
+	border-radius: var(--radius);
+	background: var(--popover);
+	color: var(--popover-foreground);
+	box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+	font-size: 0.9em;
+}
+.wiki-toast button {
+	flex-shrink: 0;
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: calc(var(--radius) - 2px);
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+.wiki-toast button:hover {
+	background: var(--muted);
+}
+
+/* Standalone auth/profile pages: Starlight's Aside and Badge components are
+   not available outside a StarlightPage, so these are the equivalents. */
+.auth-notice {
+	margin-block: 1.5rem 0;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--border);
+	border-inline-start: 3px solid var(--destructive);
+	border-radius: var(--radius);
+	background: var(--muted);
+}
+.auth-badge {
+	display: inline-block;
+	margin-inline-start: 0.4rem;
+	padding: 0.05rem 0.45rem;
+	border-radius: 999rem;
+	background: var(--muted);
+	color: var(--muted-foreground);
+	font-size: 0.75em;
+	font-weight: 600;
+	vertical-align: middle;
+}
