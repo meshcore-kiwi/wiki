@@ -30,6 +30,7 @@
 /* Shared by the auth forms and the editor's frontmatter fields (editor.css
    relies on this rule; it is the one control style both surfaces need). */
 .auth-form input,
+.wiki-editor select,
 .wiki-editor input[type='text'],
 .wiki-editor input[type='number'] {
 	padding: 0.55rem 0.75rem;
@@ -141,6 +142,16 @@
 	color: var(--muted-foreground);
 	font-size: 0.85em;
 	word-break: break-all;
+}
+
+.auth-btn[data-variant='danger'] {
+	background: var(--destructive);
+	color: var(--primary-foreground);
+	border-color: var(--destructive);
+}
+.auth-btn[data-variant='danger'][data-armed='yes'] {
+	outline: 2px solid var(--ring);
+	outline-offset: 1px;
 }
 
 .contribution {

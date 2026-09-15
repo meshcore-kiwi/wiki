@@ -45,6 +45,7 @@
 			<strong data-account-name></strong>
 			<span data-account-email></span>
 		</div>
+		<button type="button" data-account-new-page>New page</button>
 		<a href="/account">Profile</a>
 		<button type="button" data-account-signout>Sign out</button>
 	</div>
@@ -91,6 +92,22 @@
 			panel.querySelector<HTMLElement>('[data-account-email]')!.textContent = session.user.email;
 			out.hidden = true;
 			inn.hidden = false;
+		}
+
+		// The editor is a dynamic import, so this costs a reader nothing until
+		// they actually click it.
+		panel.querySelector<HTMLButtonElement>('[data-account-new-page]')?.addEventListener('click', async () => {
+			panel.hidePopover();
+			const { openEditor } = await import('../lib/editor/mount');
+			await openEditor({ create: true });
+		});
+
+		// Coming back from sign-in having asked for a new page, the same way
+		// EditLink handles ?edit=1.
+		if (session?.user && new URLSearchParams(location.search).get('new') === '1') {
+			history.replaceState(null, '', location.pathname + location.hash);
+			const { openEditor } = await import('../lib/editor/mount');
+			void openEditor({ create: true });
 		}
 
 		panel.querySelector<HTMLButtonElement>('[data-account-signout]')?.addEventListener('click', async () => {
