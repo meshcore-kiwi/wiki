@@ -53,7 +53,7 @@ Listed north to south.
 | `wre`   | Whangarei    | OwlShack    |
 | `akl`   | Auckland     | OwlShack    |
 | `hlz`   | Hamilton     | Custom      |
-| `trg`   | Tauranga     | OwlShack    |
+| `tga`   | Tauranga     | OwlShack    |
 | `npl`   | New Plymouth | meshcore-ha |
 | `wlg`   | Wellington   | OwlShack    |
 
