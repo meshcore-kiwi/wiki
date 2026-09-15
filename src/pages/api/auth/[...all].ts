@@ -1,15 +1,13 @@
-import type { APIRoute } from "astro";
+import type { APIRoute } from 'astro';
+import { createAuth } from '../../../lib/auth';
 
-// Ensure Astro treats this as server-side code
 export const prerender = false;
 
-export const ALL: APIRoute = async (ctx) => {
-    ctx.request.headers.set("x-forwarded-for", ctx.clientAddress);
+export const ALL: APIRoute = (ctx) => {
+	// ctx.request.headers is immutable, so pass a copy - better-auth reads
+	// x-forwarded-for for its rate limiting.
+	const headers = new Headers(ctx.request.headers);
+	headers.set('x-forwarded-for', ctx.clientAddress);
 
-    return new Response(
-        JSON.stringify({
-            name: "Astro",
-            url: "https://astro.build/",
-        }),
-    );
+	return createAuth().handler(new Request(ctx.request, { headers }));
 };

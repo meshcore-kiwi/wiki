@@ -1,0 +1,38 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { SignInPanel } from '../components/SignInPanel';
+import { safeRedirect } from '../lib/safe-redirect';
+import { configuredProviders } from '../lib/auth';
+
+export const prerender = false;
+
+// Where to land afterwards. Validated: `next` comes from the URL, so an
+// unchecked value here would be an open redirect wearing our own domain.
+const next = safeRedirect(Astro.url.searchParams.get('next'));
+
+if (Astro.locals.user) return Astro.redirect(next === '/' ? '/account' : next);
+
+const providers = configuredProviders();
+---
+
+<AuthLayout
+	title="Sign in"
+	description="Sign in to propose edits to the MeshCore NZ wiki."
+	tagline="Your edits become a pull request for a moderator to review."
+>
+	{/* client:load, not client:visible - it is the only thing on the page. */}
+	<SignInPanel providers={providers} next={next} withPasskey client:load />
+
+	{
+		providers.includes('github') && (
+			<p class="auth-hint">
+				GitHub here is only how you identify yourself. Your edits are still submitted for review,
+				and you need no access to the repository.
+			</p>
+		)
+	}
+
+	<p class="auth-hint">
+		No account yet? <a href={`/signup?next=${encodeURIComponent(next)}`}>Create one</a>.
+	</p>
+</AuthLayout>

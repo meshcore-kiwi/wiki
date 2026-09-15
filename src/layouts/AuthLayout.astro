@@ -1,0 +1,181 @@
+---
+// Standalone shell for the auth pages. Deliberately NOT a StarlightPage: a
+// docs sidebar, breadcrumbs and table of contents make no sense around a
+// sign-in form.
+//
+// It still pulls in the theme's tokens and fonts, so it matches the wiki
+// without inheriting its chrome.
+// Note: no .css suffix - that is how the theme's export map names these.
+// layers.css first so the `six` layer's order is declared before theme.css
+// populates it.
+import '@six-tech/starlight-theme-six/styles/layers';
+import '@six-tech/starlight-theme-six/styles/theme';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/700.css';
+import '../styles/custom.css';
+// Tailwind utilities for the React islands on these pages. Preflight is
+// deliberately excluded - see the file header.
+import '../styles/tailwind.css';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Shown under the heading. */
+	tagline?: string;
+	/** Roomier card for the profile page, which lists contributions. */
+	wide?: boolean;
+}
+
+const { title, description, tagline, wide = false } = Astro.props;
+---
+
+<html lang="en-NZ">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title} | MeshCore NZ</title>
+		<meta name="description" content={description} />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<!-- Auth pages are not wiki content. -->
+		<meta name="robots" content="noindex" />
+
+		{/*
+			theme.css defines the palette only under [data-theme], so this must
+			run before first paint or the page renders with no colours at all.
+			Same storage key as the wiki's own toggle, so a preference set there
+			carries across.
+		*/}
+		<script is:inline>
+			(() => {
+				const stored = (() => {
+					try {
+						return localStorage.getItem('starlight-theme')
+					} catch {
+						return null
+					}
+				})()
+				const theme =
+					stored === 'light' || stored === 'dark'
+						? stored
+						: matchMedia('(prefers-color-scheme: light)').matches
+							? 'light'
+							: 'dark'
+				document.documentElement.dataset.theme = theme
+			})()
+		</script>
+	</head>
+
+	<body>
+		<main class="auth-page">
+			<div class="auth-card" data-wide={wide ? '' : null}>
+				<a class="auth-brand" href="/">MeshCore NZ</a>
+				<h1>{title}</h1>
+				{tagline && <p class="auth-tagline">{tagline}</p>}
+				<slot />
+			</div>
+			<p class="auth-back"><a href="/">Back to the wiki</a></p>
+		</main>
+	</body>
+</html>
+
+<style>
+	/* Minimal reset - Starlight's is not loaded on this page. */
+	:global(*),
+	:global(*::before),
+	:global(*::after) {
+		box-sizing: border-box;
+	}
+	:global(body) {
+		margin: 0;
+		background: var(--background);
+		color: var(--foreground);
+		font-family: var(--sl-font, system-ui, sans-serif);
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	.auth-page {
+		/* --card is identical to --background in the light theme, so without a
+		   tinted surface the card is invisible apart from its border. --muted
+		   separates them in both themes with no theme-conditional rule. */
+		background: var(--muted);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		min-height: 100dvh;
+		padding: 2rem 1rem;
+	}
+
+	.auth-card {
+		width: 100%;
+		max-width: 30rem;
+		padding: 2rem;
+		border: 1px solid var(--border);
+		border-radius: calc(var(--radius) * 2);
+		background: var(--card);
+		/* Not --card-foreground: the theme's dark block defines it as the
+		   literal `--foreground` (a missing var()), so it is an invalid value
+		   that only works by falling back to inheritance. */
+		color: var(--foreground);
+	}
+
+	.auth-card[data-wide] {
+		max-width: 48rem;
+	}
+
+	.auth-brand {
+		display: block;
+		margin-block-end: 1.5rem;
+		color: var(--muted-foreground);
+		font-size: 0.85rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+	.auth-brand:hover {
+		color: var(--foreground);
+	}
+
+	.auth-card h1 {
+		margin: 0;
+		color: var(--foreground-light);
+		font-size: 1.6rem;
+		line-height: 1.2;
+	}
+	.auth-tagline {
+		margin-block: 0.5rem 0;
+		color: var(--muted-foreground);
+	}
+
+	.auth-card :global(h2) {
+		margin-block: 2rem 0;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--muted-foreground);
+	}
+
+	.auth-card :global(a) {
+		color: var(--primary);
+	}
+
+	.auth-back {
+		margin: 0;
+		font-size: 0.85rem;
+	}
+	.auth-back a {
+		color: var(--muted-foreground);
+	}
+
+	@media (max-width: 30rem) {
+		.auth-page {
+			padding: 1rem 0.5rem;
+		}
+		.auth-card {
+			padding: 1.25rem;
+		}
+	}
+</style>

@@ -4,6 +4,8 @@ import starlight from '@astrojs/starlight';
 import starlightThemeSix from '@six-tech/starlight-theme-six'
 
 import cloudflare from '@astrojs/cloudflare';
+import react from '@astrojs/react';
+import tailwind from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,8 +13,14 @@ export default defineConfig({
 	compressHTML: true,
 	adapter: cloudflare(),
 	// lightningcss rejects a selector in the Six theme's CSS; esbuild doesn't
-	vite: { build: { cssMinify: 'esbuild' } },
+	vite: {
+		build: { cssMinify: 'esbuild' },
+		plugins: [tailwind()],
+	},
 	integrations: [
+		// React only for the interactive islands (auth pages, editor panel).
+		// Doc pages render to plain HTML and load none of it.
+		react(),
 		starlight({
 			title: 'MeshCore NZ',
 			social: [
@@ -31,6 +39,12 @@ export default defineConfig({
 			// sidebar from src/content/docs/ folder structure. Add folders/files,
 			// menu updates itself. Order/labels via per-page frontmatter.
 			customCss: ['./src/styles/custom.css'],
+			// Header, not SocialIcons: the Six theme's Header imports its own
+			// SocialIcons by relative path, so that slot is never consulted.
+			components: {
+				Header: './src/components/Header.astro',
+				EditLink: './src/components/EditLink.astro',
+			},
 			head: [
 				{
 					// the Six theme renders social icons without target support;

@@ -1,0 +1,10 @@
+---
+// The Six theme's Header imports its own SocialIcons/ThemeSelect by relative
+// path, so overriding those slots does nothing. Overriding Header and
+// appending is the only injection point that does not fork the theme's markup.
+import SixHeader from '@six-tech/starlight-theme-six/overrides/Header.astro';
+import AccountMenu from './AccountMenu.astro';
+---
+
+<SixHeader />
+<AccountMenu />

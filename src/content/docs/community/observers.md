@@ -11,12 +11,12 @@ Observers are receive-only by design. They should **not** inject messages into t
 
 ## NZ observer destinations
 
-| Service | Host | Port | Transport | Auth | Format |
-| --- | --- | --- | --- | --- | --- |
-| LetsMesh | `mqtt-us-v1.letsmesh.net` | 443 | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
-| MeshMapper | `mqtt.meshmapper.net` | 443 | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
-| waev | `mqtt.waev.app` | 443 | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
-| CoreScope | `meshcore-mqtt-1.baird.io` | 443 | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
+| Service    | Host                       | Port | Transport        | Auth                              | Format                                 |
+| ---------- | -------------------------- | ---- | ---------------- | --------------------------------- | -------------------------------------- |
+| LetsMesh   | `mqtt-us-v1.letsmesh.net`  | 443  | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
+| MeshMapper | `mqtt.meshmapper.net`      | 443  | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
+| waev       | `mqtt.waev.app`            | 443  | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
+| CoreScope  | `meshcore-mqtt-1.baird.io` | 443  | WebSockets + TLS | MeshCore auth token (Ed25519 JWT) | `meshcore/{IATA}/{PUBLIC_KEY}/packets` |
 
 - `{IATA}` is your nearest town or city's IATA code (`akl`, `hlz`, `wre`, `tga`, `chc`, ...) - the same codes proposed for [regions](/community/channels/#regions). It groups topics so tools can filter by area. `{PUBLIC_KEY}` is your observer node's public key.
 - **LetsMesh**: see the [onboarding guide](https://analyzer.letsmesh.net/observer/onboard).

@@ -1,0 +1,101 @@
+---
+// Rendered by src/components/Header.astro. Note the SocialIcons override slot
+// does NOT work with this theme: the Six theme's Header imports its own
+// SocialIcons by relative path, so Starlight never consults the override.
+---
+
+{/* Reuses the theme's own .button[data-variant="ghost"] header button. */}
+<button
+	type="button"
+	class="sl-flex button account-trigger"
+	data-variant="ghost"
+	popovertarget="account-panel"
+	aria-label="Account"
+>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+		<circle cx="12" cy="7" r="4"></circle>
+	</svg>
+</button>
+
+{/* [popover] renders in the top layer, so the header's overflow:hidden cannot
+    clip it, and the browser supplies light dismiss, Escape and focus return. */}
+<div id="account-panel" popover class="account-panel not-content">
+	{/* Most pages are prerendered, so the signed-in state can't be rendered
+	    on the server. Signed-out is the honest default and the script
+	    swaps it once the session resolves. */}
+	<div data-account-state="out">
+		<a href="/signin">Sign in</a>
+		<a href="/signup">Create account</a>
+	</div>
+
+	<div data-account-state="in" hidden>
+		<div class="account-whoami">
+			<strong data-account-name></strong>
+			<span data-account-email></span>
+		</div>
+		<a href="/account">Profile</a>
+		<button type="button" data-account-signout>Sign out</button>
+	</div>
+</div>
+
+<style>
+	/* Only layout the theme's square icon button can't express. */
+	.account-trigger svg {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
+		pointer-events: none;
+	}
+</style>
+
+<script>
+	// Deliberately NOT importing lib/auth-ui's client: this script runs on every
+	// page of the wiki, and better-auth's client plus its passkey plugin is
+	// ~11 KB gzip to render a two-link dropdown. Both endpoints it needs are
+	// plain same-origin requests.
+	const trigger = document.querySelector<HTMLButtonElement>('.account-trigger');
+	const panel = document.querySelector<HTMLElement>('#account-panel');
+
+	if (trigger && panel) {
+		const out = panel.querySelector<HTMLElement>('[data-account-state="out"]')!;
+		const inn = panel.querySelector<HTMLElement>('[data-account-state="in"]')!;
+
+		// A top-layer popover is positioned against the viewport, not the
+		// trigger. CSS anchor positioning would do this declaratively but is
+		// not yet everywhere, so measure on open - it is two properties.
+		panel.addEventListener('beforetoggle', (e) => {
+			if ((e as ToggleEvent).newState !== 'open') return;
+			const r = trigger.getBoundingClientRect();
+			panel.style.top = `${r.bottom + 8}px`;
+			panel.style.insetInlineEnd = `${document.documentElement.clientWidth - r.right}px`;
+		});
+
+		const session = (await fetch('/api/auth/get-session')
+			.then((r) => (r.ok ? r.json() : null))
+			.catch(() => null)) as { user?: { name: string; email: string } } | null;
+
+		if (session?.user) {
+			panel.querySelector<HTMLElement>('[data-account-name]')!.textContent = session.user.name;
+			panel.querySelector<HTMLElement>('[data-account-email]')!.textContent = session.user.email;
+			out.hidden = true;
+			inn.hidden = false;
+		}
+
+		panel.querySelector<HTMLButtonElement>('[data-account-signout]')?.addEventListener('click', async () => {
+			await fetch('/api/auth/sign-out', { method: 'POST' });
+			location.reload();
+		});
+	}
+</script>

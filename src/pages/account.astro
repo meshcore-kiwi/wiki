@@ -1,0 +1,202 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { env } from 'cloudflare:workers';
+import { commitAuthor } from '../lib/attribution';
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/signin');
+
+const [{ results: accounts }, { results: passkeys }] = await Promise.all([
+	env.DB.prepare('select providerId from account where userId = ?').bind(user.id).all<{ providerId: string }>(),
+	env.DB.prepare('select id, name, deviceType, createdAt from passkey where userId = ?')
+		.bind(user.id)
+		.all<{ id: string; name: string | null; deviceType: string; createdAt: string }>(),
+]);
+
+const PROVIDER_NAMES: Record<string, string> = { discord: 'Discord', github: 'GitHub' };
+
+const author = commitAuthor(user);
+// normaliseDisplayName's fallback, meaning the provider gave us no usable
+// name and they have not chosen one since.
+const needsName = user.name === 'Contributor';
+---
+
+<AuthLayout title="Your profile" description="Manage your MeshCore NZ wiki account." wide>
+	{
+		needsName && (
+			<p class="auth-notice">
+				<strong>Choose a display name.</strong> You signed in without setting one, so your edits
+				would be credited to "Contributor".
+			</p>
+		)
+	}
+
+	<h2>Display name</h2>
+	<p class="auth-hint">
+		Public and permanent. It is the commit author on every edit you make and cannot be removed from
+		the history afterwards.
+	</p>
+
+	<form id="name-form" class="auth-form">
+		<label for="name">Name</label>
+		<input id="name" name="name" type="text" required minlength="2" maxlength="50" value={user.name} />
+		<button id="save-name" class="auth-btn" type="submit">Save</button>
+		<p id="name-status" class="auth-hint" role="status"></p>
+	</form>
+
+	<h2>Email</h2>
+	<p>{user.email}{user.emailVerified && <span class="auth-badge">Verified</span>}</p>
+	<p class="auth-hint">
+		Supplied by the account you signed in with. It is never published - your commits use a
+		generated address, shown above.
+	</p>
+
+	<h2>How your edits are credited</h2>
+	<p>Commits are authored as:</p>
+	<pre><code>{author.name} &lt;{author.email}&gt;</code></pre>
+	<p class="auth-hint">
+		The address is generated, not your real one - git history is public and permanent.
+	</p>
+
+	<h2>Sign-in methods</h2>
+	<ul>
+		{accounts.map((a) => <li>{PROVIDER_NAMES[a.providerId] ?? a.providerId}</li>)}
+		{accounts.length === 0 && <li class="auth-hint">None linked.</li>}
+	</ul>
+
+	<h3>Passkeys</h3>
+	{
+		passkeys.length === 0 ? (
+			<p class="auth-hint">No passkeys yet. Add one to sign in without going via Discord or GitHub.</p>
+		) : (
+			<ul>
+				{passkeys.map((p) => (
+					<li>
+						{p.name || p.deviceType} <button class="auth-btn" data-variant="secondary" data-delete-passkey={p.id} type="button">Remove</button>
+					</li>
+				))}
+			</ul>
+		)
+	}
+	<button id="add-passkey" class="auth-btn" type="button">Add a passkey</button>
+
+	<p id="error" class="auth-error" role="alert" hidden></p>
+
+	<h2>Your contributions</h2>
+	<div id="contributions"><p class="auth-hint">Loading...</p></div>
+
+	<h2>Session</h2>
+	<button id="signout" class="auth-btn" data-variant="secondary" type="button">Sign out</button>
+</AuthLayout>
+
+<script>
+	import { attempt, auth, byId, check } from '../lib/auth-ui';
+
+	const $ = byId;
+
+	$<HTMLFormElement>('name-form').addEventListener('submit', (e) => {
+		e.preventDefault();
+		attempt($<HTMLButtonElement>('save-name'), async () => {
+			const { error } = await auth.updateUser({ name: $<HTMLInputElement>('name').value.trim() });
+			check(error, 'Could not save that name.');
+			// Reload rather than patch the DOM: the server normalises the name,
+			// so what was typed is not necessarily what was stored.
+			location.reload();
+		});
+	});
+
+	$<HTMLButtonElement>('add-passkey').addEventListener('click', (e) =>
+		attempt(e.currentTarget as HTMLButtonElement, async () => {
+			check((await auth.passkey.addPasskey())?.error, 'Could not add that passkey.');
+			location.reload();
+		}),
+	);
+
+	for (const button of document.querySelectorAll<HTMLButtonElement>('[data-delete-passkey]')) {
+		button.addEventListener('click', () =>
+			attempt(button, async () => {
+				const { error } = await auth.passkey.deletePasskey({ id: button.dataset.deletePasskey! });
+				check(error, 'Could not remove that passkey.');
+				location.reload();
+			}),
+		);
+	}
+
+	// Review feedback lands here rather than in an inbox: there is no email
+	// sending since Email OTP was removed, so this page is the only place a
+	// contributor learns a moderator asked for changes.
+	void (async () => {
+		const host = $<HTMLDivElement>('contributions');
+		try {
+			const res = await fetch('/api/contributions');
+			const { contributions } = (await res.json()) as { contributions: Contribution[] };
+
+			if (!contributions.length) {
+				host.innerHTML = '<p class="auth-hint">No contributions yet. Use <strong>Edit this page</strong> on any wiki page.</p>';
+				return;
+			}
+			host.replaceChildren(...contributions.map(render));
+		} catch {
+			host.innerHTML = '<p class="auth-error">Could not load your contributions.</p>';
+		}
+	})();
+
+	type Contribution = {
+		id: string;
+		status: string;
+		title: string | null;
+		pr: { number: number; url: string; state: string; merged: boolean; changedFiles: number } | null;
+		feedback: Array<{ kind: string; author: string; state?: string; body: string; at: string }>;
+	};
+
+	const STATUS_LABEL: Record<string, string> = {
+		open: 'Draft, not submitted',
+		submitted: 'Awaiting review',
+		merged: 'Published',
+		closed: 'Closed without merging',
+	};
+
+	function render(c: Contribution): HTMLElement {
+		const item = document.createElement('article');
+		item.className = 'contribution';
+
+		const heading = document.createElement('h3');
+		heading.textContent = c.title ?? 'Untitled draft';
+		item.append(heading);
+
+		const meta = document.createElement('p');
+		meta.className = 'auth-hint';
+		meta.textContent = STATUS_LABEL[c.status] ?? c.status;
+		if (c.pr) {
+			meta.append(' - ');
+			const link = document.createElement('a');
+			link.href = c.pr.url;
+			link.textContent = `#${c.pr.number}`;
+			link.target = '_blank';
+			link.rel = 'noopener';
+			meta.append(link);
+		}
+		item.append(meta);
+
+		for (const f of c.feedback.filter((x) => x.body.trim())) {
+			const note = document.createElement('blockquote');
+			const who = document.createElement('strong');
+			who.textContent = f.state === 'CHANGES_REQUESTED' ? `${f.author} requested changes` : f.author;
+			const text = document.createElement('p');
+			text.textContent = f.body;
+			note.append(who, text);
+			item.append(note);
+		}
+
+		return item;
+	}
+
+	$<HTMLButtonElement>('signout').addEventListener('click', (e) =>
+		attempt(e.currentTarget as HTMLButtonElement, async () => {
+			await auth.signOut();
+			location.href = '/';
+		}),
+	);
+</script>

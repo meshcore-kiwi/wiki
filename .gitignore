@@ -250,3 +250,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Working notes, deliberately not pushed. Anchored with a leading slash: a bare
+# "docs/" also matches src/content/docs/, which would silently ignore every new
+# wiki page added locally.
+/docs/
+.auth-schema.generated.sql
+

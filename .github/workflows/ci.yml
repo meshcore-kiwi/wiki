@@ -33,3 +33,28 @@ jobs:
             echo "::error::meshcore.co.uk is not an official domain - use meshcore.io"
             exit 1
           fi
+
+  # Without this, merging a contributor's PR changed the repo but never the
+  # site. Only runs on main, and only once build and style have passed.
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [build, style]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply D1 migrations
+        run: npx wrangler d1 migrations apply wiki_users --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Deploy Worker
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
