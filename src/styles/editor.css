@@ -1,0 +1,196 @@
+/* ---------------------------------------------------------------------------
+   Editor UI. Imported by src/lib/editor/mount.ts, NOT by astro.config.mjs, so
+   it loads with the editor chunk instead of blocking every page a reader
+   visits - the same reason Crepe, Vue and CodeMirror are a dynamic import.
+
+   Colours are the Six theme's own tokens only, so light and dark both come out
+   right with no second palette.
+--------------------------------------------------------------------------- */
+
+/* A modal <dialog>, so the focus trap, Escape and the top layer come from the
+   browser. That means undoing the UA's centred-box defaults: it wants
+   inset:0 with margin:auto, a border, padding and a max-width. */
+.wiki-editor {
+	position: fixed;
+	inset: auto;
+	inset-block: 0;
+	inset-inline-end: 0;
+	margin: 0;
+	max-width: none;
+	max-height: none;
+	height: auto;
+	width: min(52rem, 100vw);
+	padding: 0;
+	border: 0;
+	border-inline-start: 1px solid var(--border);
+	background: var(--background);
+	color: var(--foreground);
+	box-shadow: -10px 0 40px rgb(0 0 0 / 0.25);
+}
+/* Author styles beat the UA sheet whatever the specificity, so the open state
+   has to carry the flex layout or a closed dialog would still be painted. */
+.wiki-editor[open] {
+	display: flex;
+	flex-direction: column;
+}
+.wiki-editor::backdrop {
+	background: rgb(0 0 0 / 0.4);
+}
+
+.wiki-editor-bar,
+.wiki-editor-meta {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	padding: 0.6rem 1rem;
+	border-block-end: 1px solid var(--border);
+}
+.wiki-editor-bar {
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.wiki-editor-bar code {
+	color: var(--muted-foreground);
+}
+.wiki-editor-actions {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+/* .auth-btn carries a top margin for form layouts; not wanted in a toolbar. */
+.wiki-editor-actions .auth-btn {
+	margin-top: 0;
+}
+
+.wiki-editor-modes {
+	display: flex;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	overflow: hidden;
+}
+.wiki-editor-modes button {
+	padding: 0.4rem 0.8rem;
+	border: 0;
+	background: none;
+	color: var(--muted-foreground);
+	font: inherit;
+	cursor: pointer;
+}
+.wiki-editor-modes button[aria-pressed='true'] {
+	background: var(--muted);
+	color: var(--foreground);
+}
+.wiki-editor-modes button[disabled] {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.wiki-editor-meta {
+	flex-wrap: wrap;
+}
+.wiki-editor-meta label {
+	display: grid;
+	gap: 0.2rem;
+	flex: 1 1 12rem;
+	font-size: 0.85em;
+	color: var(--muted-foreground);
+}
+
+.wiki-editor-body {
+	flex: 1;
+	overflow: auto;
+}
+.wiki-editor-body > div {
+	min-height: 100%;
+}
+
+/* CodeMirror sizes to content by default; fill the panel instead. */
+.wiki-editor .cm-editor {
+	height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   Crepe palette.
+
+   Crepe's own theme files (frame.css etc.) only declare these --crepe-*
+   properties, so we skip them and map the set onto the Six theme's tokens.
+   Those tokens are already defined for both [data-theme] values, so the editor
+   follows the site theme with no switching logic and no second palette.
+
+   The full set is 23 variables; if a Crepe upgrade adds one it falls back to
+   Crepe's built-in default rather than breaking.
+--------------------------------------------------------------------------- */
+
+.wiki-editor .milkdown {
+	--crepe-color-background: var(--background);
+	--crepe-color-on-background: var(--foreground);
+	--crepe-color-surface: var(--card);
+	--crepe-color-surface-low: var(--muted);
+	/* --card-foreground is malformed in the theme's dark block (`--foreground`
+	   with no var()), so use the token it meant to point at. */
+	--crepe-color-on-surface: var(--foreground);
+	--crepe-color-on-surface-variant: var(--muted-foreground);
+	--crepe-color-outline: var(--border);
+	--crepe-color-primary: var(--primary);
+	--crepe-color-secondary: var(--secondary);
+	--crepe-color-on-secondary: var(--secondary-foreground);
+	--crepe-color-inverse: var(--foreground);
+	--crepe-color-on-inverse: var(--background);
+	--crepe-color-inline-code: var(--destructive);
+	--crepe-color-error: var(--destructive);
+	--crepe-color-hover: var(--muted);
+	--crepe-color-selected: var(--accent);
+	--crepe-color-inline-area: var(--muted);
+
+	--crepe-base-font-size: 1rem;
+	--crepe-font-title: var(--sl-font);
+	--crepe-font-default: var(--sl-font);
+	--crepe-font-code: var(--sl-font-mono);
+}
+
+/* The theme sets `strong { color: var(--foreground-light) !important }` with no
+   .not-content exemption, which reaches into the editor and washes out every
+   bold run. Inherit instead so bold follows the surrounding text. */
+.wiki-editor strong {
+	color: inherit !important;
+}
+
+/* Starlight asides shown as blocks in the editor. The label is rendered from
+   an attribute rather than as text, so it cannot be partially deleted. */
+.wiki-editor .wiki-directive {
+	margin-block: 1rem;
+	padding: 0.75rem 1rem;
+	border-inline-start: 3px solid var(--crepe-color-outline);
+	border-radius: var(--radius);
+	background: var(--crepe-color-surface-low);
+}
+.wiki-editor .wiki-directive::before {
+	content: attr(data-heading);
+	display: block;
+	margin-block-end: 0.35rem;
+	font-weight: 700;
+	font-size: 0.8em;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--crepe-color-on-surface-variant);
+}
+
+.wiki-editor-status {
+	padding: 0.6rem 1rem;
+	border-block-start: 1px solid var(--border);
+	background: var(--muted);
+	font-size: 0.85em;
+}
+.wiki-editor-status p {
+	margin: 0;
+	color: var(--muted-foreground);
+}
+.wiki-editor-status p[data-tone='error'] {
+	color: var(--destructive);
+	font-weight: 500;
+}
+.wiki-editor-status ul {
+	margin: 0.4rem 0 0;
+	padding-inline-start: 1.1rem;
+	color: var(--muted-foreground);
+}
