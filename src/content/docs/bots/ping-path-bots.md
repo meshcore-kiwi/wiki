@@ -7,7 +7,7 @@ sidebar:
 
 Ping and path bots answer a trigger word in the `#testing` channel with the route your message took to reach them. They are how you find out whether your node can reach a region, how many repeaters it went through, and which ones.
 
-One path bot per region. All of them live in `#testing` - see [Channels](/community/channels/) for how to join it.
+A region can run more than one. All of them live in `#testing` - see [Channels](/community/channels/) for how to join it.
 
 ## Using a bot
 
@@ -53,24 +53,28 @@ The hex prefixes in the path are the same ones you can look up with the [NZ Pref
 
 ## Regional bots
 
+Every path bot must be listed here, with the area it covers and who runs it - preferably with a way to reach them. An unlisted bot is one nobody can ask about when it misbehaves.
+
+Triggers must be unique nationally. Beyond that they are free: most start from the IATA codes proposed for [regions](/community/channels/#regions), but `akl north`, or anything else unclaimed, is equally fine. Agreeing a single national scheme has been tried and did not converge - unique and listed is what actually works.
+
+Four to a region is about the practical limit.
+
 Listed north to south.
 
 | Trigger      | Region                 | Software    | Owner                                               |
 | ------------ | ---------------------- | ----------- | --------------------------------------------------- |
-| `wre`        | Whangarei              | OwlShack    | <br />                                              |
+| `wre`        | Whangarei              | OwlShack    |                                                     |
 | `akl`        | Auckland               | OwlShack    | [🐶Wes](https://meshcore.baird.io/#/nodes/c0c5414e) |
-| `hlz`        | Hamilton               | Custom      | <br />                                              |
-| `tga`        | Tauranga               | OwlShack    | <br />                                              |
-| `npl`        | New Plymouth           | meshcore-ha | <br />                                              |
+| `hlz`        | Hamilton               | Custom      |                                                     |
+| `tga`        | Tauranga               | OwlShack    |                                                     |
+| `npl`        | New Plymouth           | meshcore-ha |                                                     |
 | `wlg hutt`   | Lower Hutt, Wellington | OwlShack    | [CJC](https://meshcore.baird.io/#/nodes/cc79f097)   |
-| `wlg`        | Wellington             | OwlShack    | <br />                                              |
+| `wlg`        | Wellington             | OwlShack    |                                                     |
 | `wlg karori` | Wellington             | OwlShack    | [be1a](https://meshcore.baird.io/#/nodes/bcb02909)  |
 
 :::note
 Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/), in its place north to south.
 :::
-
-Trigger words follow the same IATA-code scheme proposed for [regions](/community/channels/#regions).
 
 ## Writing a bot
 
@@ -79,7 +83,7 @@ If you are building or configuring one, match this pattern - people rely on the 
 **Respond to `!bot`** with your trigger word and region name:
 
 ```
-@[<Sender Name>] Use "<Regional Code>" for <Regional Name>
+@[<Sender Name>] Use "<Your Trigger>" for <Area You Cover>
 ```
 
 **Respond to your trigger word** with the path report:

@@ -1,20 +1,16 @@
-// Loaded only when someone clicks Edit. Everything heavy - Crepe (which brings
-// Vue), CodeMirror, the theme CSS - lives in this chunk so a reader who never
-// edits never downloads it.
+// Lazy chunk: Crepe (which brings Vue), CodeMirror and the theme CSS load only
+// when someone clicks Edit.
 import { Crepe } from '@milkdown/crepe';
 import { remarkStringifyOptionsCtx } from '@milkdown/kit/core';
+import { remarkPreserveEmptyLinePlugin } from '@milkdown/kit/preset/commonmark';
 import { EditorView, basicSetup } from 'codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { oneDark } from '@codemirror/theme-one-dark';
-// Structural styles only. Crepe's palette files (frame.css and friends) are
-// nothing but --crepe-* custom properties, so instead of shipping theirs and
-// swapping it on theme change, custom.css maps those variables onto the Six
-// theme's tokens - one definition that is already correct in both modes.
-// As ?url, not a plain CSS import: Vite hoists CSS reachable through a dynamic
-// import into the IMPORTING page's stylesheet set, so a plain import here put
-// 83 KB of ProseMirror selectors in the <head> of every prerendered page.
-// Fetching the stylesheets when the editor opens is the whole point of the
-// chunk being lazy.
+// Structural styles only - custom.css maps the --crepe-* properties onto the
+// Six theme's tokens, so Crepe's own palette files are not shipped.
+// `?url` is load-bearing: Vite hoists CSS reachable through a dynamic import
+// into the importing page's stylesheet set, putting 83 KB of ProseMirror
+// selectors in the <head> of every prerendered page.
 import crepeStyles from '@milkdown/crepe/theme/common/style.css?url';
 import editorStyles from '../../styles/editor.css?url';
 import { buildPanel } from './panel';
@@ -57,17 +53,15 @@ function loadStyles() {
 }
 
 export async function openEditor(options: OpenOptions) {
-	// The panel's presence in the DOM already records that the editor is open;
-	// a module flag was a second copy of that fact which stayed true if setup
-	// threw, latching the editor shut until a reload.
+	// The DOM is the open/closed flag; a module-level one latched shut when
+	// setup threw.
 	if (document.querySelector('.wiki-editor')) return;
 
 	loadStyles();
 
 	const creating = 'create' in options;
 
-	// Creating needs the section list; editing needs the page itself. Either
-	// way a 401 means sign in and come back, rather than a browser dialog.
+	// Creating needs the section list; editing needs the page itself.
 	const res = await fetch(
 		creating ? '/api/sections' : `/api/page?id=${encodeURIComponent(options.entryId)}`,
 	);
@@ -99,8 +93,7 @@ export async function openEditor(options: OpenOptions) {
 
 	let crepe: Crepe | null = null;
 	let raw: EditorView | null = null;
-	// The single source of truth while switching modes: whichever editor is
-	// live owns the text, and this holds it in between.
+	// Holds the text between modes; whichever editor is live owns it otherwise.
 	let markdownText = source.body;
 
 	const isDark = () => document.documentElement.dataset.theme === 'dark';
@@ -114,18 +107,19 @@ export async function openEditor(options: OpenOptions) {
 		panel.richHost.hidden = false;
 		panel.rawHost.hidden = true;
 		crepe = new Crepe({ root: panel.richHost, defaultValue: markdownText });
-		// Match the conventions already in src/content/docs so a one-word fix
-		// does not arrive as a diff touching every list and table in the file.
-		// Shared with scripts/normalise-content.mjs - see format.ts.
+		// Shared with scripts/normalise-content.mjs so a one-word fix does not
+		// reformat every table in the file - see format.ts.
 		crepe.editor.config((ctx) => {
 			ctx.set(remarkStringifyOptionsCtx, {
 				...ctx.get(remarkStringifyOptionsCtx),
 				...STRINGIFY_OPTIONS,
 			});
 		});
-		// Teaches Milkdown the `:::aside` syntax. Without it, directives round
-		// -tripped as escaped plain text and broke the aside.
+		// Without this, `:::aside` round-trips as escaped plain text.
 		crepe.editor.use(directivePlugins);
+		// Milkdown writes `<br />` for every empty paragraph that is not the
+		// last node, so blank table cells came back as `<br />`.
+		await crepe.editor.remove(remarkPreserveEmptyLinePlugin);
 		await crepe.create();
 	}
 
@@ -160,8 +154,7 @@ export async function openEditor(options: OpenOptions) {
 	panel.onSave(async () => {
 		const target = panel.target();
 
-		// Caught here rather than by the server so the message points at the
-		// field: an empty address is a half-filled form, not a bad request.
+		// Caught here so the message points at the field, not at the request.
 		if (target && !target.slug) {
 			panel.say('Give the page a title, or type an address for it.', 'error');
 			return;
@@ -251,9 +244,8 @@ export async function openEditor(options: OpenOptions) {
 
 
 /**
- * Errors before the panel exists have nowhere to live, so this is the one
- * fallback surface. Deliberately not `alert()`: a modal browser dialog blocks
- * the page and looks like a fault in the site.
+ * Fallback surface for errors raised before the panel exists. Not `alert()`:
+ * a modal browser dialog looks like a fault in the site.
  */
 function showToast(message: string) {
 	const existing = document.querySelector('.wiki-toast');

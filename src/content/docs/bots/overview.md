@@ -20,7 +20,7 @@ Anything else is not an established pattern on the national mesh. Talk to the co
 
 These apply to every bot, of every kind.
 
-- **One bot of each type per region.** A region can have a path bot and a CAP bot and a weather bot - it does not need two path bots. Two bots doing the same job in the same area double the traffic and halve the usefulness. Check what already exists before you deploy.
+- **Don't crowd a region.** A region can run a path bot, a CAP bot, a weather bot, and more than one path bot where the coverage earns it - four path bots to a region is about the practical limit. Each one needs a trigger nobody else is using and a listing on its page saying where it is and who runs it. Check what already exists before you deploy.
 - **Ask before you deploy.** Raise it in the [Discord](https://discord.com/channels/1495203904898728149/1495412712505606315) or the [Facebook group](https://www.facebook.com/groups/meshcorenz) first. Coordination is the whole point - see [Etiquette](/community/etiquette/).
 - **Stay on the dedicated channel.** Ping and path bots belong in `#testing`. Never automate on the Public channel without community consensus.
 - **Something has to trigger it.** A message, an alert feed, or a schedule are all legitimate triggers - a path bot answers a message, a CAP bot answers a feed, a regional weather bot can run to a clock. What is not legitimate is a bot talking on a channel that did not ask for it. Anything that speaks unprompted needs a channel set up for it, and putting it on a standard channel takes full community consensus.
@@ -47,11 +47,11 @@ The technology doesn't matter. Following the pattern does - see [Ping & path bot
 
 What people run in New Zealand:
 
-| Software                                                    | Notes                                                                             |
-| ----------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [OwlShack](https://github.com/meshcore-go/OwlShack)         | Operator console with a Bots page - templated auto-responders and scheduled messages |
-| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha)  | Home Assistant integration; bots are built as HA automations                        |
-| Custom code                                                 | Several regions run their own                                                       |
+| Software                                                   | Notes                                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [OwlShack](https://github.com/meshcore-go/OwlShack)        | Operator console with a Bots page - templated auto-responders and scheduled messages |
+| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha) | Home Assistant integration; bots are built as HA automations                         |
+| Custom code                                                | Several regions run their own                                                        |
 
 :::note
 Community stub - running something that isn't listed? [Add it](/community/contributing/).
