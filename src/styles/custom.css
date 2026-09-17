@@ -241,3 +241,12 @@
 	font-weight: 600;
 	vertical-align: middle;
 }
+
+/* The theme leaves the fixed sidebar with `top: auto`, so it falls back to its
+   static position. Chromium pins that at layout; Firefox re-resolves it against
+   the scrolled flow position, so past a few hundred pixels the whole nav slides
+   down and off the screen. Pin it under the sticky header (3.5rem + 1px border)
+   and both browsers agree. */
+.aside .sidebar {
+	top: calc(3.5rem + 1px);
+}
