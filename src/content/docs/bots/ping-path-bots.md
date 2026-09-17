@@ -55,15 +55,16 @@ The hex prefixes in the path are the same ones you can look up with the [NZ Pref
 
 Listed north to south.
 
-| Trigger      | Region       | Software    | Owner                                               |
-| ------------ | ------------ | ----------- | --------------------------------------------------- |
-| `wre`        | Whangarei    | OwlShack    | <br />                                              |
-| `akl`        | Auckland     | OwlShack    | [🐶Wes](https://meshcore.baird.io/#/nodes/c0c5414e) |
-| `hlz`        | Hamilton     | Custom      | <br />                                              |
-| `tga`        | Tauranga     | OwlShack    | <br />                                              |
-| `npl`        | New Plymouth | meshcore-ha | <br />                                              |
-| `wlg`        | Wellington   | OwlShack    | <br />                                              |
-| `wlg karori` | Wellington   | OwlShack    | [be1a](https://meshcore.baird.io/#/nodes/bcb02909)  |
+| Trigger      | Region                 | Software    | Owner                                               |
+| ------------ | ---------------------- | ----------- | --------------------------------------------------- |
+| `wre`        | Whangarei              | OwlShack    | <br />                                              |
+| `akl`        | Auckland               | OwlShack    | [🐶Wes](https://meshcore.baird.io/#/nodes/c0c5414e) |
+| `hlz`        | Hamilton               | Custom      | <br />                                              |
+| `tga`        | Tauranga               | OwlShack    | <br />                                              |
+| `npl`        | New Plymouth           | meshcore-ha | <br />                                              |
+| `wlg hutt`   | Lower Hutt, Wellington | OwlShack    | [CJC](https://meshcore.baird.io/#/nodes/cc79f097)   |
+| `wlg`        | Wellington             | OwlShack    | <br />                                              |
+| `wlg karori` | Wellington             | OwlShack    | [be1a](https://meshcore.baird.io/#/nodes/bcb02909)  |
 
 :::note
 Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/), in its place north to south.
