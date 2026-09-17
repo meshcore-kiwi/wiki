@@ -55,14 +55,15 @@ The hex prefixes in the path are the same ones you can look up with the [NZ Pref
 
 Listed north to south.
 
-| Trigger | Region       | Software    |
-| ------- | ------------ | ----------- |
-| `wre`   | Whangarei    | OwlShack    |
-| `akl`   | Auckland     | OwlShack    |
-| `hlz`   | Hamilton     | Custom      |
-| `tga`   | Tauranga     | OwlShack    |
-| `npl`   | New Plymouth | meshcore-ha |
-| `wlg`   | Wellington   | OwlShack    |
+| Trigger      | Region       | Software    | Owner |
+| ------------ | ------------ | ----------- | ----- |
+| `wre`        | Whangarei    | OwlShack    |       |
+| `akl`        | Auckland     | OwlShack    |       |
+| `hlz`        | Hamilton     | Custom      |       |
+| `tga`        | Tauranga     | OwlShack    |       |
+| `npl`        | New Plymouth | meshcore-ha |       |
+| `wlg`        | Wellington   | OwlShack    |       |
+| `wlg karori` | Wellington   | OwlShack    | [be1a](https://meshcore.baird.io/#/nodes/bcb02909) |
 
 :::note
 Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/), in its place north to south.
