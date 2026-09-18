@@ -47,11 +47,11 @@ The technology doesn't matter. Following the pattern does - see [Ping & path bot
 
 What people run in New Zealand:
 
-| Software                                                   | Notes                                                                                |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [OwlShack](https://github.com/meshcore-go/OwlShack)        | Operator console with a Bots page - templated auto-responders and scheduled messages |
-| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha) | Home Assistant integration; bots are built as HA automations                         |
-| Custom code                                                | Several regions run their own                                                        |
+| Software                                                   | Notes                                                                    |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [OwlShack](https://github.com/meshcore-go/OwlShack)        | Runs companion and repeater nodes; auto-responders live on its Bots page |
+| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha) | Home Assistant integration; bots are built as HA automations             |
+| Custom code                                                | Several regions run their own                                            |
 
 :::note
 Community stub - running something that isn't listed? [Add it](/community/contributing/).
