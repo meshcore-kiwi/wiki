@@ -17,11 +17,11 @@ Files, tools, and links curated for people building and running MeshCore nodes a
 
 ## Maps & Planning
 
-| Link                                                                       | What it is                     |
-| -------------------------------------------------------------------------- | ------------------------------ |
-| [NZ Meshmapper](http://nz.meshmapper.net)                                  | NZ node coverage map           |
-| [NZ MeshCore Analyzer](https://meshcore.baird.io/#/home)                   | Live network map and analytics |
-| [MeshCore Link Planner](https://moderatewinguy.github.io/MeshMap-Planner/) | Plan RF links between sites    |
+| Link                                                                       | What it is                        |
+| -------------------------------------------------------------------------- | --------------------------------- |
+| [NZ Meshmapper](https://nz.meshmapper.net)                                 | NZ node coverage map              |
+| [CoreScope](https://meshcore.baird.io/#/home)                              | Live NZ network map and analytics |
+| [MeshCore Link Planner](https://moderatewinguy.github.io/MeshMap-Planner/) | Plan RF links between sites       |
 
 ## Keys & Prefixes
 
@@ -40,9 +40,17 @@ See [Hex Prefixes](/guides/hex-prefixes/) for how prefixes work and which size t
 | [meshcore.io](https://meshcore.io/)                             | Official MeshCore site                    |
 | [Web Flasher](https://flasher.meshcore.io/)                     | Flash MeshCore firmware from your browser |
 | [Web App](https://app.meshcore.nz/)                             | Browser-based MeshCore client             |
-| [MeshCore FAQ](https://github.com/LitBomb/MeshCore-FAQ)         | Very good FAQ and general MeshCore info   |
+| [MeshCore FAQ](https://github.com/LitBomb/MeshCore-FAQ)         | Community FAQ and general MeshCore info   |
 | [MeshCore CLI Commands](https://docs.meshcore.io/cli_commands/) | Official CLI command reference            |
+
+## Bots
+
+| Link                                                       | What it is                                        |
+| ---------------------------------------------------------- | ------------------------------------------------- |
+| [Bots on the NZ Mesh](/bots/overview/)                     | Rules for running a bot here                      |
+| [OwlShack](https://github.com/meshcore-go/OwlShack)        | Operator console for companion and repeater nodes |
+| [meshcore-ha](https://github.com/meshcore-dev/meshcore-ha) | Home Assistant integration                        |
 
 ## Files
 
-- [Repeater Memorandum of Understanding v1](https://meshed.kiwi/resources/files/Meshcore_Repeater_MEMORANDUM%20OF%20UNDERSTANDING_v1.docx) (.docx, 9.5 KB)
+- [Repeater Memorandum of Understanding v1](/files/meshcore-repeater-mou-v1.docx) (.docx, 9.5 KB) - originally published by meshed.kiwi and mirrored here, since that site is no longer maintained.
