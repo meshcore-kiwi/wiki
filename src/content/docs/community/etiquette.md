@@ -16,11 +16,11 @@ Use a name that identifies your node's location or purpose - not just a callsign
 
 ## Set an accurate location
 
-Nodes must be in fixed locations. A fixed, reasonably accurate location allows mesh users to understand real coverage, plan links, and connect to your node with a high probability of success.
+Most nodes sit in one place, and a fixed, reasonably accurate location lets mesh users understand real coverage, plan links, and connect to your node with a high probability of success.
 
 - Don't leave the location as 0,0 or a default - a node with no location appears broken to everyone else.
-- Location doesn't need to be exact for security reasons, but must be accurate enough that coverage modelling reflects reality. Street or immediate-area accuracy is sufficient; suburb level is the minimum acceptable.
-- Portable or temporary deployments are fine, but identify them clearly in the node name.
+- Keep it approximate if you'd rather not publish your exact address, but it must be accurate enough that coverage modelling reflects reality. Street or immediate-area accuracy is sufficient; suburb level is the minimum acceptable.
+- Portable or temporary deployments are the exception rather than the rule - run one if you need to, but say so clearly in the node name.
 
 :::tip
 If someone can't tell from your location whether they can reach you, your location isn't accurate enough.
@@ -50,11 +50,13 @@ LoRa is a shared, limited-bandwidth medium. Every transmission affects everyone 
 
 ## Telemetry, sensors & bots
 
-At its roots, "MeshCore is a simple, secure, off-grid mesh communications system." Telemetry and automation get a back seat when it comes to airtime - **human communications always take priority.**
+At its roots, MeshCore is ["a simple, secure, off-grid mesh communications system"](https://meshcore.io/). Telemetry and automation get a back seat when it comes to airtime - **human communications always take priority.**
+
+Bots have their own rules and their own pages - start at [Bots on the NZ Mesh](/bots/overview/).
 
 - **Experiment on a separate channel.** Limit your channel use and airtime during development.
 - **Avoid auto-polling on the national network.** If it must be used, data should be on-demand only - not polled on a schedule.
-- **Use of the national network must benefit the mesh.** An acceptable example: a single bot auto-replying to test messages in the dedicated `#testing` channel.
+- **Use of the national network must benefit the mesh.** An acceptable example: a path bot auto-replying to test messages in the dedicated `#testing` channel.
 - **Avoid the Public channel for automation.** Community consensus must be reached before any automation is permitted there.
 - **Never use FLOOD request paths for data.** A flood path ties up every repeater on the national mesh. Use a specific path - max 2 hops along the linear NZ backhaul, zero hops recommended.
 - **If polling is required:** no more than 5 sensors adjacent to a path endpoint node, and no more than 2 polls in any 24-hour period. Push/activation-triggered data is always preferred - but keep activations important and high value. A door sensor on your high-site equipment room is worth transmitting; a driveway alert hundreds of kilometres from anyone who could act on it is not.
@@ -68,7 +70,7 @@ If your use case doesn't clearly benefit the mesh community, reconsider whether 
 Outdated firmware on a node you operate can cause issues for everyone routing through it.
 
 - Nodes running v1.13.0 or older will **silently drop** 2-byte and 3-byte packets.
-- Subscribe to MeshCore release notes so you know when updates land.
+- Watch [MeshCore releases](https://github.com/meshcore-dev/MeshCore/releases) so you know when updates land.
 - After updating, verify your node is still appearing and routing correctly.
 
 ## Communicate, collaborate & have fun
@@ -102,5 +104,5 @@ If you wouldn't say it loudly in a room full of strangers of all ages, don't sen
 The mesh can carry sensitive communications. Don't intercept, replay, or tamper with traffic that isn't yours.
 
 - Don't publish or share private keys - ever.
-- Don't run nodes or tools designed to disrupt or monitor other operators' traffic.
+- Don't run nodes or tools designed to disrupt other operators' traffic, or to single out one operator's. Network-wide visibility is a different thing and is welcome - see [Observers](/community/observers/).
 - If you find a security issue, report it privately to the affected operator first.
