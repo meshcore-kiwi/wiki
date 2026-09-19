@@ -21,18 +21,20 @@ Treat Public and hashtag channels as public spaces. Repeaters, observers, and in
 
 ## Current NZ channels
 
-| Channel        | Purpose                                                                                                                      |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Public         | General nationwide chat                                                                                                      |
-| `#testing`     | Connection testing and bots. Send `!bot` to find which bots you can reach - standard ones include `akl`, `hlz`, `wre`, `tga` |
-| `#emergency`   | Emergency communications                                                                                                     |
-| `#weather`     | Weather reports and warnings                                                                                                 |
-| `#alerts`      | Notices that matter to the mesh community                                                                                    |
-| `#jokes`       | Keep it light (and appropriate)                                                                                              |
-| `#ham`         | Ham radio chat                                                                                                               |
-| `#quakealerts` | NZ wide earthquakes notficattions as they come in from GeoNet                                                                |
-| `#wlg-weather` | Wellington, Kapiti, and Blenheim weather forecasts at 6am & 7pm + realtime Metservice alerts                                 |
-| `#wlg-marine`  | Wellington marine forecast, tides, and current sea temp at 5am & 12pm daily                                                  |
+| Channel         | Purpose                                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Public          | General nationwide chat                                                                                                      |
+| `#testing`      | Connection testing and bots. Send `!bot` to find which bots you can reach - standard ones include `akl`, `hlz`, `wre`, `tga` |
+| `#emergency`    | Emergency communications                                                                                                     |
+| `#weather`      | Weather reports and warnings                                                                                                 |
+| `#alerts`       | Notices that matter to the mesh community                                                                                    |
+| `#jokes`        | Keep it light (and appropriate)                                                                                              |
+| `#ham`          | Ham radio chat                                                                                                               |
+| `#homesteading` | Talking about Homesteading and related subjects                                                                              |
+| `#tramping`     | Conversation about Tramping (hiking)                                                                                         |
+| `#quakealerts`  | NZ wide earthquakes notifications as they come in from GeoNet                                                                |
+| `#wlg-weather`  | Wellington, Kapiti, and Blenheim weather forecasts at 6am & 7pm + realtime Metservice alerts                                 |
+| `#wlg-marine`   | Wellington marine forecast, tides, and current sea temp at 5am & 12pm daily                                                  |
 
 Know of a channel that's missing? [Add it](/community/contributing/).
 
