@@ -65,7 +65,7 @@ Listed north to south.
 | ------------ | ---------------------- | ----------- | --------------------------------------------------- |
 | `wre`        | Whangarei              | OwlShack    |                                                     |
 | `akl`        | Auckland               | OwlShack    | [🐶Wes](https://meshcore.baird.io/#/nodes/c0c5414e) |
-| `hlz`        | Hamilton               | Custom      |                                                     |
+| `hlz`        | Hamilton               | Custom      | 🏍️Leyton                                           |
 | `tga`        | Tauranga               | OwlShack    |                                                     |
 | `npl`        | New Plymouth           | meshcore-ha |                                                     |
 | `wlg hutt`   | Lower Hutt, Wellington | OwlShack    | [CJC](https://meshcore.baird.io/#/nodes/cc79f097)   |
