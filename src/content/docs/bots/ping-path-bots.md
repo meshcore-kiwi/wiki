@@ -71,6 +71,11 @@ Listed north to south.
 | `wlg hutt`   | Lower Hutt, Wellington | OwlShack    | [CJC](https://meshcore.baird.io/#/nodes/cc79f097)   |
 | `wlg`        | Wellington             | OwlShack    |                                                     |
 | `wlg karori` | Wellington             | OwlShack    | [be1a](https://meshcore.baird.io/#/nodes/bcb02909)  |
+| nsn mapua    | Māpua, Nelson          | OwlShack    | [Gav](https://meshcore.baird.io/#/nodes/21e9cc66)   |
+
+
+
+
 
 :::note
 Community stub - this list is incomplete. Running a regional bot that's missing? [Add it](/community/contributing/), in its place north to south.
